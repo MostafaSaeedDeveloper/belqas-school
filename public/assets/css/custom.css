@@ -1,0 +1,500 @@
+/* ===========================
+   CUSTOM STYLES
+   Project Specific Customizations
+   =========================== */
+
+/* School-specific color theme adjustments */
+:root {
+    /* Custom school colors */
+    --school-primary: #2c5aa0;
+    --school-secondary: #f8b500;
+    --school-success: #28a745;
+    --school-info: #17a2b8;
+    --school-warning: #ffc107;
+    --school-danger: #dc3545;
+}
+
+/* Custom page layouts */
+.page-wrapper {
+    min-height: calc(100vh - 120px);
+}
+
+.content-wrapper {
+    background: white;
+    border-radius: var(--border-radius-xl);
+    margin: var(--spacing-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+/* School branding */
+.school-logo {
+    max-width: 60px;
+    height: auto;
+    transition: var(--transition-normal);
+}
+
+.school-logo:hover {
+    transform: scale(1.05);
+}
+
+.school-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.school-motto {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0;
+    font-style: italic;
+}
+
+/* Student/Teacher Cards */
+.person-card {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-md);
+    transition: var(--transition-normal);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.person-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-xl);
+}
+
+.person-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--border-radius-full);
+    object-fit: cover;
+    border: 3px solid var(--primary-color);
+    margin: 0 auto var(--spacing-md);
+    display: block;
+}
+
+.person-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: var(--spacing-sm);
+    color: var(--dark-color);
+}
+
+.person-role,
+.person-class {
+    text-align: center;
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.person-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid #f0f0f0;
+}
+
+.person-stat {
+    text-align: center;
+}
+
+.person-stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    display: block;
+}
+
+.person-stat-label {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 4px;
+}
+
+/* Grade/Score styling */
+.grade-display {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: var(--border-radius-full);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: white;
+    position: relative;
+}
+
+.grade-excellent {
+    background: var(--gradient-success);
+}
+
+.grade-good {
+    background: var(--gradient-info);
+}
+
+.grade-fair {
+    background: var(--gradient-warning);
+    color: var(--dark-color);
+}
+
+.grade-poor {
+    background: var(--gradient-danger);
+}
+
+.grade-percentage {
+    font-size: 0.7rem;
+    position: absolute;
+    bottom: 2px;
+    right: 0;
+    left: 0;
+    text-align: center;
+}
+
+/* Attendance status */
+.attendance-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: var(--border-radius-lg);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.attendance-present {
+    background: #d4edda;
+    color: #155724;
+}
+
+.attendance-absent {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.attendance-late {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.attendance-excused {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+/* Subject/Class specific colors */
+.subject-math {
+    border-left: 4px solid #007bff;
+}
+
+.subject-science {
+    border-left: 4px solid #28a745;
+}
+
+.subject-arabic {
+    border-left: 4px solid #dc3545;
+}
+
+.subject-english {
+    border-left: 4px solid #ffc107;
+}
+
+.subject-history {
+    border-left: 4px solid #6f42c1;
+}
+
+.subject-geography {
+    border-left: 4px solid #20c997;
+}
+
+/* Schedule/Timetable */
+.timetable {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.timetable th {
+    background: var(--gradient-primary);
+    color: white;
+    padding: var(--spacing-md);
+    text-align: center;
+    font-weight: 600;
+}
+
+.timetable td {
+    padding: var(--spacing-md);
+    border: 1px solid #f0f0f0;
+    text-align: center;
+    position: relative;
+    transition: var(--transition-fast);
+}
+
+.timetable td:hover {
+    background: rgba(102, 126, 234, 0.05);
+}
+
+.timetable-period {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 4px;
+}
+
+.timetable-subject {
+    font-size: 0.9rem;
+    color: var(--dark-color);
+}
+
+.timetable-teacher {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 4px;
+}
+
+.timetable-break {
+    background: #f8f9fa !important;
+    color: #666;
+    font-style: italic;
+}
+
+/* Financial elements */
+.fee-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--success-color);
+}
+
+.fee-due {
+    color: var(--danger-color);
+}
+
+.fee-paid {
+    color: var(--success-color);
+}
+
+.fee-partial {
+    color: var(--warning-color);
+}
+
+.payment-status {
+    padding: 6px 12px;
+    border-radius: var(--border-radius-lg);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.payment-completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.payment-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.payment-failed {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Reports and analytics */
+.report-summary {
+    background: var(--light-color);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+}
+
+.report-metric {
+    text-align: center;
+    padding: var(--spacing-lg);
+}
+
+.report-metric-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    display: block;
+    margin-bottom: var(--spacing-sm);
+}
+
+.report-metric-label {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: var(--spacing-sm);
+}
+
+.report-metric-change {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.report-metric-change.positive {
+    color: var(--success-color);
+}
+
+.report-metric-change.negative {
+    color: var(--danger-color);
+}
+
+.report-metric-change::before {
+    content: "▲ ";
+}
+
+.report-metric-change.negative::before {
+    content: "▼ ";
+}
+
+/* Calendar specific */
+.calendar-event {
+    background: var(--primary-color);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    margin: 1px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.calendar-event.exam {
+    background: var(--danger-color);
+}
+
+.calendar-event.holiday {
+    background: var(--success-color);
+}
+
+.calendar-event.meeting {
+    background: var(--info-color);
+}
+
+/* Print styles */
+@media print {
+    .sidebar,
+    .top-bar,
+    .no-print,
+    .btn,
+    .alert,
+    #alert-container {
+        display: none !important;
+    }
+    
+    .main-content {
+        margin-right: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .page-content {
+        background: white !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        padding: 20px !important;
+    }
+    
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        page-break-inside: avoid;
+    }
+    
+    .stat-card,
+    .person-card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        color: black !important;
+        page-break-after: avoid;
+    }
+    
+    .timetable,
+    .table {
+        page-break-inside: auto;
+    }
+    
+    .timetable tr,
+    .table tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+    }
+}
+
+/* Accessibility improvements */
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: var(--primary-color);
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    border-radius: 4px;
+    z-index: 10000;
+}
+
+.skip-link:focus {
+    top: 6px;
+}
+
+/* Focus indicators */
+button:focus,
+.btn:focus,
+.form-control:focus,
+.nav-link:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .card,
+    .stat-card,
+    .person-card {
+        border: 2px solid var(--dark-color);
+    }
+    
+    .btn {
+        border-width: 2px;
+    }
+    
+    .alert {
+        border-width: 2px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
