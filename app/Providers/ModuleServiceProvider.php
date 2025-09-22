@@ -26,10 +26,10 @@ class ModuleServiceProvider extends ServiceProvider
                 continue;
             }
 
-            $serviceProvider = sprintf('Modules\\%s\\Providers\\%sServiceProvider', $moduleName, $moduleName);
-
-            if (class_exists($serviceProvider)) {
-                $this->app->register($serviceProvider);
+            foreach ($this->discoverProviders($moduleDirectory, $moduleName) as $provider) {
+                if (class_exists($provider)) {
+                    $this->app->register($provider);
+                }
             }
         }
     }
@@ -48,5 +48,28 @@ class ModuleServiceProvider extends ServiceProvider
         $content = file_get_contents($path);
 
         return json_decode($content, true) ?: [];
+    }
+
+    /**
+     * Discover service providers declared for the given module.
+     */
+    protected function discoverProviders(string $moduleDirectory, string $moduleName): array
+    {
+        $providers = [];
+        $moduleConfigPath = $moduleDirectory . '/module.json';
+
+        if (file_exists($moduleConfigPath)) {
+            $configuration = json_decode(file_get_contents($moduleConfigPath), true);
+
+            if (is_array($configuration)) {
+                $providers = array_filter($configuration['providers'] ?? []);
+            }
+        }
+
+        if (empty($providers)) {
+            $providers[] = sprintf('Modules\\%s\\Providers\\%sServiceProvider', $moduleName, $moduleName);
+        }
+
+        return array_unique($providers);
     }
 }
