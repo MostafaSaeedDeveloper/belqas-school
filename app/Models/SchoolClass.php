@@ -28,4 +28,9 @@ class SchoolClass extends Model
     {
         return $this->hasMany(Section::class, 'class_id');
     }
+
+    public function timetables()
+    {
+        return $this->hasMany(ClassTimetable::class, 'class_id');
+    }
 }

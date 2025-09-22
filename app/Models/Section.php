@@ -20,4 +20,9 @@ class Section extends Model
     {
         return $this->belongsTo(SchoolClass::class, 'class_id');
     }
+
+    public function timetables()
+    {
+        return $this->hasMany(ClassTimetable::class, 'section_id');
+    }
 }
