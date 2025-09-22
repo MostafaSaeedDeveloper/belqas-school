@@ -4,6 +4,7 @@ namespace Modules\Users\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -25,7 +26,7 @@ class UserController extends Controller
         $filters = $this->filters($request);
         $users = $this->filteredUsers($filters);
 
-        $rolesQuery = Role::query();
+        $rolesQuery = Role::query()->whereNotIn('name', $this->excludedRoles());
 
         if (Schema::hasColumn('roles', 'display_name')) {
             $rolesQuery->orderBy('display_name');
@@ -41,9 +42,9 @@ class UserController extends Controller
             });
 
         $stats = [
-            'total' => User::count(),
-            'active' => User::where('active', true)->count(),
-            'inactive' => User::where('active', false)->count(),
+            'total' => $this->baseUserQuery()->count(),
+            'active' => $this->baseUserQuery()->where('active', true)->count(),
+            'inactive' => $this->baseUserQuery()->where('active', false)->count(),
         ];
 
         return view('users::index', compact('users', 'filters', 'roles', 'stats'));
@@ -201,7 +202,7 @@ class UserController extends Controller
      */
     protected function filteredUsers(array $filters): LengthAwarePaginator
     {
-        $query = User::query()->with('roles');
+        $query = $this->baseUserQuery()->with('roles');
 
         if (! empty($filters['search'])) {
             $search = $filters['search'];
@@ -249,7 +250,7 @@ class UserController extends Controller
      */
     protected function rolesForForms()
     {
-        $query = Role::query();
+        $query = Role::query()->whereNotIn('name', $this->excludedRoles());
 
         if (Schema::hasColumn('roles', 'is_active')) {
             $query->where('is_active', true);
@@ -265,6 +266,24 @@ class UserController extends Controller
             ->mapWithKeys(function (Role $role) {
                 return [$role->name => $role->display_name ?: ucfirst(str_replace('_', ' ', $role->name))];
             });
+    }
+
+    /**
+     * Retrieve the base query for users handled within the module.
+     */
+    protected function baseUserQuery(): Builder
+    {
+        return User::query()->whereDoesntHave('roles', function ($query) {
+            $query->whereIn('name', $this->excludedRoles());
+        });
+    }
+
+    /**
+     * Roles that should be excluded from the users module listings.
+     */
+    protected function excludedRoles(): array
+    {
+        return ['student', 'parent'];
     }
 
     /**

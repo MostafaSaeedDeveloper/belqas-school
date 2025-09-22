@@ -1,0 +1,10 @@
+{
+    "name": "Students",
+    "alias": "students",
+    "description": "إدارة حسابات الطلاب ومتابعة بياناتهم.",
+    "keywords": ["students", "enrollment", "profiles"],
+    "priority": 0,
+    "providers": [
+        "Modules\\Students\\Providers\\StudentServiceProvider"
+    ]
+}
