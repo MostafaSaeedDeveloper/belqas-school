@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ClassController;
+use App\Http\Controllers\ClassTimetableController;
+use App\Http\Controllers\StudentController;
 
 // Authentication Routes
 Auth::routes();
@@ -20,11 +23,14 @@ Route::middleware(['auth'])->group(function () {
 
     // Students Routes
     Route::prefix('students')->name('students.')->group(function () {
-        Route::get('/', function() { return view('students.index'); })->name('index')->middleware('can:view_students');
-        Route::get('/create', function() { return view('students.create'); })->name('create')->middleware('can:create_students');
-        Route::get('/{student}', function() { return view('students.show'); })->name('show')->middleware('can:view_students');
-        Route::get('/{student}/edit', function() { return view('students.edit'); })->name('edit')->middleware('can:edit_students');
-        Route::get('/reports', function() { return view('students.reports'); })->name('reports')->middleware('can:view_students');
+        Route::get('/', [StudentController::class, 'index'])->name('index');
+        Route::get('/create', [StudentController::class, 'create'])->name('create');
+        Route::post('/', [StudentController::class, 'store'])->name('store');
+        Route::get('/reports', [StudentController::class, 'reports'])->name('reports');
+        Route::get('/{student}', [StudentController::class, 'show'])->name('show');
+        Route::get('/{student}/edit', [StudentController::class, 'edit'])->name('edit');
+        Route::put('/{student}', [StudentController::class, 'update'])->name('update');
+        Route::delete('/{student}', [StudentController::class, 'destroy'])->name('destroy');
     });
 
     // Teachers Routes
@@ -38,11 +44,17 @@ Route::middleware(['auth'])->group(function () {
 
     // Classes Routes
     Route::prefix('classes')->name('classes.')->group(function () {
-        Route::get('/', function() { return view('classes.index'); })->name('index')->middleware('can:view_classes');
-        Route::get('/create', function() { return view('classes.create'); })->name('create')->middleware('can:create_classes');
-        Route::get('/{class}', function() { return view('classes.show'); })->name('show')->middleware('can:view_classes');
-        Route::get('/{class}/edit', function() { return view('classes.edit'); })->name('edit')->middleware('can:edit_classes');
-        Route::get('/timetables', function() { return view('classes.timetables'); })->name('timetables')->middleware('can:view_timetable');
+        Route::get('/', [ClassController::class, 'index'])->name('index')->middleware('can:view_classes');
+        Route::get('/create', [ClassController::class, 'create'])->name('create')->middleware('can:create_classes');
+        Route::post('/', [ClassController::class, 'store'])->name('store')->middleware('can:create_classes');
+        Route::get('/timetables', [ClassTimetableController::class, 'index'])->name('timetables')->middleware('can:view_timetable');
+        Route::post('/timetables', [ClassTimetableController::class, 'store'])->name('timetables.store')->middleware('can:edit_classes');
+        Route::put('/timetables/{timetable}', [ClassTimetableController::class, 'update'])->name('timetables.update')->middleware('can:edit_classes');
+        Route::delete('/timetables/{timetable}', [ClassTimetableController::class, 'destroy'])->name('timetables.destroy')->middleware('can:edit_classes');
+        Route::get('/{class}', [ClassController::class, 'show'])->name('show')->middleware('can:view_classes');
+        Route::get('/{class}/edit', [ClassController::class, 'edit'])->name('edit')->middleware('can:edit_classes');
+        Route::put('/{class}', [ClassController::class, 'update'])->name('update')->middleware('can:edit_classes');
+        Route::delete('/{class}', [ClassController::class, 'destroy'])->name('destroy')->middleware('can:delete_classes');
     });
 
     // Subjects Routes
