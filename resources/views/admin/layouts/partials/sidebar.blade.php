@@ -239,7 +239,7 @@
                     <li><a href="{{ route('settings.general') }}" class="nav-link {{ request()->routeIs('settings.general') ? 'active' : '' }}">
                         <i class="far fa-circle"></i> الإعدادات العامة
                     </a></li>
-                    <li><a href="{{ route('settings.users') }}" class="nav-link {{ request()->routeIs('settings.users') ? 'active' : '' }}">
+                    <li><a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
                         <i class="far fa-circle"></i> إدارة المستخدمين
                     </a></li>
                     <li><a href="{{ route('settings.permissions') }}" class="nav-link {{ request()->routeIs('settings.permissions') ? 'active' : '' }}">

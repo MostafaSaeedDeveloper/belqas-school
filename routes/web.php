@@ -101,7 +101,9 @@ Route::middleware(['auth'])->group(function () {
     // Settings Routes
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('/general', function() { return view('settings.general'); })->name('general')->middleware('can:view_settings');
-        Route::get('/users', function() { return view('settings.users'); })->name('users')->middleware('can:view_users');
+        Route::get('/users', function() {
+            return redirect()->route('users.index');
+        })->name('users')->middleware('can:view_users');
         Route::get('/permissions', function() { return view('settings.permissions'); })->name('permissions')->middleware('can:view_users');
         Route::get('/backup', function() { return view('settings.backup'); })->name('backup')->middleware('can:system_backup');
     });

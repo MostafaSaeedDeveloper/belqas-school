@@ -1,0 +1,18 @@
+/vendor/
+/node_modules/
+/storage/*.key
+/public/storage
+.env
+.phpunit.result.cache
+.php-cs-fixer.cache
+/.idea/
+/.vscode/
+.DS_Store
+/bootstrap/cache/*.php
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+
+# Module build artifacts
+modules/*/vendor/
+modules/*/node_modules/
