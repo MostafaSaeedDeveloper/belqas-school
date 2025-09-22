@@ -18,15 +18,6 @@ Route::middleware(['auth'])->group(function () {
     // Main Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Students Routes
-    Route::prefix('students')->name('students.')->group(function () {
-        Route::get('/', function() { return view('students.index'); })->name('index')->middleware('can:view_students');
-        Route::get('/create', function() { return view('students.create'); })->name('create')->middleware('can:create_students');
-        Route::get('/{student}', function() { return view('students.show'); })->name('show')->middleware('can:view_students');
-        Route::get('/{student}/edit', function() { return view('students.edit'); })->name('edit')->middleware('can:edit_students');
-        Route::get('/reports', function() { return view('students.reports'); })->name('reports')->middleware('can:view_students');
-    });
-
     // Teachers Routes
     Route::prefix('teachers')->name('teachers.')->group(function () {
         Route::get('/', function() { return view('teachers.index'); })->name('index')->middleware('can:view_teachers');
