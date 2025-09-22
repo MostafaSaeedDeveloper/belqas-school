@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\StudentController;
 
 // Authentication Routes
 Auth::routes();
@@ -20,11 +21,14 @@ Route::middleware(['auth'])->group(function () {
 
     // Students Routes
     Route::prefix('students')->name('students.')->group(function () {
-        Route::get('/', function() { return view('students.index'); })->name('index')->middleware('can:view_students');
-        Route::get('/create', function() { return view('students.create'); })->name('create')->middleware('can:create_students');
-        Route::get('/{student}', function() { return view('students.show'); })->name('show')->middleware('can:view_students');
-        Route::get('/{student}/edit', function() { return view('students.edit'); })->name('edit')->middleware('can:edit_students');
-        Route::get('/reports', function() { return view('students.reports'); })->name('reports')->middleware('can:view_students');
+        Route::get('/', [StudentController::class, 'index'])->name('index');
+        Route::get('/create', [StudentController::class, 'create'])->name('create');
+        Route::post('/', [StudentController::class, 'store'])->name('store');
+        Route::get('/reports', [StudentController::class, 'reports'])->name('reports');
+        Route::get('/{student}', [StudentController::class, 'show'])->name('show');
+        Route::get('/{student}/edit', [StudentController::class, 'edit'])->name('edit');
+        Route::put('/{student}', [StudentController::class, 'update'])->name('update');
+        Route::delete('/{student}', [StudentController::class, 'destroy'])->name('destroy');
     });
 
     // Teachers Routes
