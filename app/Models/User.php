@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable
 {
@@ -124,5 +125,15 @@ class User extends Authenticatable
             'last_login_at' => now(),
             'last_login_ip' => $ip ?: request()->ip(),
         ]);
+    }
+
+    public function studentProfile(): HasOne
+    {
+        return $this->hasOne(Student::class);
+    }
+
+    public function teacherProfile(): HasOne
+    {
+        return $this->hasOne(Teacher::class);
     }
 }
