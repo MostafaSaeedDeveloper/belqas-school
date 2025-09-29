@@ -2,49 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\User;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
+use App\Models\Assessment;
+use App\Models\Classroom;
+use App\Models\Grade;
+use App\Models\Student;
+use App\Models\Teacher;
+use Illuminate\Contracts\View\View;
 
 class DashboardController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('can:view_dashboard');
     }
 
-    /**
-     * Show the application dashboard.
-     */
-    public function index()
+    public function index(): View
     {
-        // إحصائيات بسيطة للوحة التحكم
         $stats = [
-            'students' => User::role('student')->count(),
-            'teachers' => User::role('teacher')->count(),
-            'parents' => User::role('parent')->count(),
-            'total_users' => User::count(),
-            'roles' => Role::count(),
-            'permissions' => Permission::count(),
+            'students' => Student::count(),
+            'teachers' => Teacher::count(),
+            'classrooms' => Classroom::count(),
+            'assessments' => Assessment::count(),
+            'grades_recorded' => Grade::count(),
         ];
 
-        // آخر المستخدمين المسجلين
-        $recent_users = User::latest()
+        $recentStudents = Student::latest()->take(5)->get();
+        $recentGrades = Grade::with(['enrollment.student', 'assessment.subject'])
+            ->latest('graded_at')
             ->take(5)
-            ->get()
-            ->map(function ($user) {
-                return [
-                    'name' => $user->name,
-                    'role' => $user->getRoleNames()->first() ?? 'بدون دور',
-                    'created_at' => $user->created_at->diffForHumans(),
-                ];
-            });
+            ->get();
 
-        return view('admin.dashboard', compact('stats', 'recent_users'));
+        return view('admin.dashboard', compact('stats', 'recentStudents', 'recentGrades'));
     }
 }

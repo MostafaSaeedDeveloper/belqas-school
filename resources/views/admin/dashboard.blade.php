@@ -3,18 +3,16 @@
 @section('title', 'لوحة التحكم - نظام إدارة مدرسة بلقاس')
 
 @section('page-header')
-@section('page-title', 'لوحة التحكم')
-@section('page-subtitle', 'نظرة شاملة على أداء المدرسة')
+    @section('page-title', 'لوحة التحكم')
+    @section('page-subtitle', 'نظرة شاملة على أداء المدرسة')
 
-@section('breadcrumb')
-    <li class="breadcrumb-item active">لوحة التحكم</li>
-@endsection
+    @section('breadcrumb')
+        <li class="breadcrumb-item active">لوحة التحكم</li>
+    @endsection
 @endsection
 
 @section('content')
-<!-- Statistics Cards -->
 <div class="stats-grid">
-    <!-- Students Card -->
     <div class="stat-card" data-type="students">
         <div class="stat-card-header">
             <div class="stat-icon students">
@@ -22,16 +20,11 @@
             </div>
         </div>
         <div class="stat-content">
-            <div class="stat-number" data-stat="students">0</div>
+            <div class="stat-number" data-stat="students">{{ number_format($stats['students']) }}</div>
             <div class="stat-label">إجمالي الطلاب</div>
-            <div class="stat-change positive">
-                <i class="fas fa-arrow-up"></i>
-                <span>+12% من الشهر الماضي</span>
-            </div>
         </div>
     </div>
 
-    <!-- Teachers Card -->
     <div class="stat-card" data-type="teachers">
         <div class="stat-card-header">
             <div class="stat-icon teachers">
@@ -39,16 +32,11 @@
             </div>
         </div>
         <div class="stat-content">
-            <div class="stat-number" data-stat="teachers">0</div>
-            <div class="stat-label">المعلمين</div>
-            <div class="stat-change positive">
-                <i class="fas fa-arrow-up"></i>
-                <span>+3 معلمين جدد</span>
-            </div>
+            <div class="stat-number" data-stat="teachers">{{ number_format($stats['teachers']) }}</div>
+            <div class="stat-label">المعلمون المسجلون</div>
         </div>
     </div>
 
-    <!-- Classes Card -->
     <div class="stat-card" data-type="classes">
         <div class="stat-card-header">
             <div class="stat-icon classes">
@@ -56,271 +44,270 @@
             </div>
         </div>
         <div class="stat-content">
-            <div class="stat-number" data-stat="classes">0</div>
-            <div class="stat-label">الفصول الدراسية</div>
-            <div class="stat-change neutral">
-                <i class="fas fa-minus"></i>
-                <span>لا توجد تغييرات</span>
-            </div>
+            <div class="stat-number" data-stat="classes">{{ number_format($stats['classrooms']) }}</div>
+            <div class="stat-label">الفصول الدراسية النشطة</div>
         </div>
     </div>
 
-    <!-- Attendance Card -->
-    <div class="stat-card" data-type="attendance">
+    <div class="stat-card" data-type="assessments">
         <div class="stat-card-header">
             <div class="stat-icon attendance">
-                <i class="fas fa-calendar-check"></i>
+                <i class="fas fa-file-signature"></i>
             </div>
         </div>
         <div class="stat-content">
-            <div class="stat-number" data-stat="attendance">0</div>
-            <div class="stat-label">نسبة الحضور %</div>
-            <div class="stat-change positive">
-                <i class="fas fa-arrow-up"></i>
-                <span>+2% من الأسبوع الماضي</span>
+            <div class="stat-number" data-stat="assessments">{{ number_format($stats['assessments']) }}</div>
+            <div class="stat-label">التقييمات المسجلة</div>
+        </div>
+    </div>
+
+    <div class="stat-card" data-type="grades">
+        <div class="stat-card-header">
+            <div class="stat-icon grades">
+                <i class="fas fa-star"></i>
             </div>
+        </div>
+        <div class="stat-content">
+            <div class="stat-number" data-stat="grades">{{ number_format($stats['grades_recorded']) }}</div>
+            <div class="stat-label">الدرجات المدخلة</div>
         </div>
     </div>
 </div>
 
-<!-- Quick Actions -->
 <div class="quick-actions-section">
     <h2 class="section-title">
         <i class="fas fa-bolt"></i>
         العمليات السريعة
     </h2>
     <div class="actions-grid">
-        <a href="{{ route('students.create') }}" class="action-btn" data-action="add-student">
-            <i class="fas fa-user-plus"></i>
-            <span>إضافة طالب</span>
+        <a href="{{ route('students.index') }}" class="action-btn" data-action="manage-students">
+            <i class="fas fa-user-graduate"></i>
+            <span>إدارة الطلاب</span>
         </a>
 
-        <a href="{{ route('teachers.create') }}" class="action-btn" data-action="add-teacher">
+        <a href="{{ route('teachers.index') }}" class="action-btn" data-action="manage-teachers">
             <i class="fas fa-chalkboard-teacher"></i>
-            <span>إضافة معلم</span>
+            <span>إدارة المعلمين</span>
         </a>
 
-        <a href="{{ route('attendance.daily') }}" class="action-btn" data-action="take-attendance">
-            <i class="fas fa-calendar-check"></i>
-            <span>أخذ الحضور</span>
-        </a>
-
-        <a href="{{ route('reports.index') }}" class="action-btn" data-action="view-reports">
-            <i class="fas fa-chart-bar"></i>
-            <span>عرض التقارير</span>
-        </a>
-
-        <a href="{{ route('classes.index') }}" class="action-btn" data-action="manage-classes">
+        <a href="{{ route('classrooms.index') }}" class="action-btn" data-action="manage-classes">
             <i class="fas fa-school"></i>
             <span>إدارة الفصول</span>
         </a>
 
-        <a href="{{ route('finance.index') }}" class="action-btn" data-action="financial-overview">
-            <i class="fas fa-money-bill-wave"></i>
-            <span>الشؤون المالية</span>
+        <a href="{{ route('subjects.index') }}" class="action-btn" data-action="manage-subjects">
+            <i class="fas fa-book-open"></i>
+            <span>المواد الدراسية</span>
+        </a>
+
+        <a href="{{ route('assessments.index') }}" class="action-btn" data-action="manage-assessments">
+            <i class="fas fa-file-signature"></i>
+            <span>التقييمات والامتحانات</span>
+        </a>
+
+        <a href="{{ route('grades.index') }}" class="action-btn" data-action="manage-grades">
+            <i class="fas fa-star"></i>
+            <span>سجل الدرجات</span>
+        </a>
+
+        <a href="{{ route('attendance.index') }}" class="action-btn" data-action="manage-attendance">
+            <i class="fas fa-calendar-check"></i>
+            <span>الحضور اليومي</span>
         </a>
     </div>
 </div>
 
-<!-- Charts Section -->
-<div class="charts-section">
-    <!-- Students Growth Chart -->
-    <div class="chart-card">
-        <div class="chart-header">
-            <h3 class="chart-title">نمو أعداد الطلاب</h3>
-            <span class="chart-period">آخر 6 أشهر</span>
-        </div>
-        <div class="chart-container" id="students-chart">
-            <!-- Chart will be rendered by JavaScript -->
-        </div>
-    </div>
-
-    <!-- Attendance Rate Chart -->
-    <div class="chart-card">
-        <div class="chart-header">
-            <h3 class="chart-title">معدل الحضور الأسبوعي</h3>
-            <span class="chart-period">آخر 6 أسابيع</span>
-        </div>
-        <div class="chart-container" id="attendance-chart">
-            <!-- Chart will be rendered by JavaScript -->
-        </div>
-    </div>
-</div>
-
-<!-- Bottom Section: Activity & Calendar -->
-<div class="dashboard-bottom">
-    <!-- Recent Activity -->
-    <div class="activity-section">
-        <h2 class="section-title">
-            <i class="fas fa-history"></i>
-            النشاط الأخير
-        </h2>
-        <div class="activity-list">
-            <!-- Activities will be loaded by JavaScript -->
-        </div>
-        <div class="text-center mt-4">
-            <a href="{{ route('activity.index') }}" class="btn btn-outline-primary">
-                <i class="fas fa-eye"></i>
-                عرض جميع الأنشطة
-            </a>
-        </div>
-    </div>
-
-    <!-- Calendar -->
-    <div class="calendar-section">
-        <h2 class="section-title">
-            <i class="fas fa-calendar"></i>
-            التقويم
-        </h2>
-        <div class="calendar">
-            <div class="calendar-header">
-                <button class="calendar-nav-btn calendar-prev">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-                <div class="calendar-month">سبتمبر 2025</div>
-                <button class="calendar-nav-btn calendar-next">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-            </div>
-            <div class="calendar-grid">
-                <!-- Calendar will be rendered by JavaScript -->
-            </div>
-        </div>
-        <div class="text-center mt-4">
-            <a href="{{ route('events.index') }}" class="btn btn-outline-primary btn-sm">
-                <i class="fas fa-calendar-alt"></i>
-                عرض جميع الأحداث
-            </a>
-        </div>
-    </div>
-</div>
-
-<!-- Latest News Section -->
-<div class="news-section" style="margin-bottom: 2rem;">
-    <div class="card">
-        <div class="card-header">
-            <h3 class="section-title mb-0">
-                <i class="fas fa-newspaper"></i>
-                آخر الأخبار والإعلانات
+<div class="data-panels">
+    <div class="data-panel">
+        <div class="panel-header">
+            <h3>
+                <i class="fas fa-user-clock"></i>
+                أحدث الطلاب المسجلين
             </h3>
         </div>
-        <div class="card-body">
-            <div class="news-list">
-                <div class="news-item">
-                    <div class="news-date">
-                        <span class="day">15</span>
-                        <span class="month">سبتمبر</span>
-                    </div>
-                    <div class="news-content">
-                        <h4>بداية العام الدراسي الجديد</h4>
-                        <p>يسر إدارة المدرسة أن تعلن عن بداية العام الدراسي الجديد 2025/2026</p>
-                    </div>
-                </div>
+        <div class="panel-body">
+            @if($recentStudents->isEmpty())
+                <p class="text-muted">لا توجد بيانات طلاب حديثة.</p>
+            @else
+                <ul class="recent-list">
+                    @foreach($recentStudents as $student)
+                        <li>
+                            <div>
+                                <strong>{{ $student->first_name }} {{ $student->last_name }}</strong>
+                                <small class="d-block text-muted">تم التسجيل في {{ optional($student->created_at)->format('Y-m-d') }}</small>
+                            </div>
+                            <span class="badge">{{ optional($student->classroom)->name ?? 'بدون فصل' }}</span>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </div>
+    </div>
 
-                <div class="news-item">
-                    <div class="news-date">
-                        <span class="day">12</span>
-                        <span class="month">سبتمبر</span>
-                    </div>
-                    <div class="news-content">
-                        <h4>اجتماع أولياء الأمور</h4>
-                        <p>اجتماع عام لأولياء الأمور يوم الخميس الساعة 10 صباحاً</p>
-                    </div>
-                </div>
-
-                <div class="news-item">
-                    <div class="news-date">
-                        <span class="day">10</span>
-                        <span class="month">سبتمبر</span>
-                    </div>
-                    <div class="news-content">
-                        <h4>ورشة تدريبية للمعلمين</h4>
-                        <p>ورشة تدريبية حول استخدام التكنولوجيا في التعليم</p>
-                    </div>
-                </div>
-            </div>
+    <div class="data-panel">
+        <div class="panel-header">
+            <h3>
+                <i class="fas fa-star"></i>
+                أحدث الدرجات المسجلة
+            </h3>
+        </div>
+        <div class="panel-body">
+            @if($recentGrades->isEmpty())
+                <p class="text-muted">لا توجد درجات جديدة حتى الآن.</p>
+            @else
+                <ul class="recent-list">
+                    @foreach($recentGrades as $grade)
+                        <li>
+                            <div>
+                                <strong>{{ $grade->enrollment->student->first_name }} {{ $grade->enrollment->student->last_name }}</strong>
+                                <small class="d-block text-muted">{{ $grade->assessment->name }} - {{ optional($grade->graded_at)->format('Y-m-d') }}</small>
+                            </div>
+                            <span class="badge">{{ $grade->score }} / {{ $grade->assessment->max_score }}</span>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
         </div>
     </div>
 </div>
-
 @endsection
 
 @push('styles')
 <style>
-/* News Section Styles */
-.news-section {
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xxl);
+}
+
+.stat-card {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(15px);
     border-radius: var(--border-radius-xl);
-    box-shadow: var(--shadow-lg);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.news-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-lg);
-}
-
-.news-item {
-    display: flex;
-    gap: var(--spacing-lg);
     padding: var(--spacing-lg);
-    background: rgba(102, 126, 234, 0.02);
-    border-radius: var(--border-radius-lg);
-    transition: var(--transition-normal);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-.news-item:hover {
-    background: rgba(102, 126, 234, 0.05);
-    transform: translateX(-5px);
+.stat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
 }
 
-.news-date {
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    color: #fff;
+}
+
+.stat-icon.students { background: var(--gradient-primary); }
+.stat-icon.teachers { background: linear-gradient(45deg, #fbc531, #e1b12c); }
+.stat-icon.classes { background: linear-gradient(45deg, #4cd137, #44bd32); }
+.stat-icon.attendance { background: linear-gradient(45deg, #00a8ff, #0097e6); }
+.stat-icon.grades { background: linear-gradient(45deg, #e056fd, #be2edd); }
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-label {
+    color: #666;
+}
+
+.quick-actions-section {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: var(--border-radius-xl);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-lg);
+    margin-bottom: var(--spacing-xxl);
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.action-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: var(--gradient-primary);
-    color: var(--white);
-    border-radius: var(--border-radius-md);
-    padding: var(--spacing-sm);
-    min-width: 60px;
+    gap: var(--spacing-sm);
+    background: rgba(102, 126, 234, 0.08);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    color: inherit;
+    transition: var(--transition-normal);
     text-align: center;
 }
 
-.news-date .day {
-    font-size: 1.5rem;
-    font-weight: 700;
-    line-height: 1;
+.action-btn:hover {
+    background: rgba(102, 126, 234, 0.16);
+    transform: translateY(-3px);
+    color: inherit;
 }
 
-.news-date .month {
-    font-size: 0.8rem;
-    opacity: 0.9;
+.data-panels {
+    display: grid;
+    gap: var(--spacing-xl);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
-.news-content h4 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: var(--spacing-xs);
-    color: var(--dark-color);
+.data-panel {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-.news-content p {
-    color: #666;
+.panel-header {
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.panel-body {
+    padding: var(--spacing-lg);
+}
+
+.recent-list {
+    list-style: none;
     margin: 0;
-    font-size: 0.9rem;
-    line-height: 1.5;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.recent-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-md);
+    background: rgba(102, 126, 234, 0.06);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-md);
+}
+
+.recent-list .badge {
+    background: var(--gradient-primary);
+    color: #fff;
+    border-radius: var(--border-radius-md);
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
 }
 
 @media (max-width: 768px) {
-    .news-item {
+    .recent-list li {
         flex-direction: column;
-        text-align: center;
-    }
-
-    .news-date {
-        align-self: center;
+        align-items: flex-start;
     }
 }
 </style>
@@ -328,10 +315,8 @@
 
 @push('scripts')
 <script>
-// Additional dashboard functionality can be added here
-document.addEventListener('DOMContentLoaded', function() {
-    // Add any page-specific JavaScript here
-    console.log('لوحة التحكم جاهزة');
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('لوحة التحكم جاهزة بالبيانات الحية.');
 });
 </script>
 @endpush
