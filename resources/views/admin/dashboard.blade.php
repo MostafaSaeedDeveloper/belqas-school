@@ -159,10 +159,18 @@
                     @foreach($recentGrades as $grade)
                         <li>
                             <div>
-                                <strong>{{ $grade->enrollment->student->first_name }} {{ $grade->enrollment->student->last_name }}</strong>
-                                <small class="d-block text-muted">{{ $grade->assessment->name }} - {{ optional($grade->graded_at)->format('Y-m-d') }}</small>
+                                @php
+                                    $student = optional($grade->enrollment)->student;
+                                    $assessment = optional($grade->assessment);
+                                    $studentName = collect([
+                                        optional($student)->first_name,
+                                        optional($student)->last_name,
+                                    ])->filter()->implode(' ');
+                                @endphp
+                                <strong>{{ $studentName ?: 'طالب غير معروف' }}</strong>
+                                <small class="d-block text-muted">{{ $assessment->name ?? 'تقييم غير محدد' }} - {{ optional($grade->graded_at)->format('Y-m-d') }}</small>
                             </div>
-                            <span class="badge">{{ $grade->score }} / {{ $grade->assessment->max_score }}</span>
+                            <span class="badge">{{ $grade->score }} / {{ $assessment->max_score ?? '—' }}</span>
                         </li>
                     @endforeach
                 </ul>
