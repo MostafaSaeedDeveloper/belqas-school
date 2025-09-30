@@ -1,3 +1,5 @@
 {
-    "Users": true
+    "Users": true,
+    "Students": true,
+    "Teachers": true
 }
