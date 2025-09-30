@@ -112,6 +112,51 @@
                 </div>
             </div>
 
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">المواد والفصول المرتبطة</h5>
+                    <a href="{{ route('classes.index') }}" class="btn btn-sm btn-outline-primary">إدارة الفصول</a>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <h6 class="fw-semibold mb-2"><i class="fas fa-book me-2"></i> المواد المسندة</h6>
+                            <ul class="list-unstyled mb-0">
+                                @forelse($teacher->teachingSubjects as $subject)
+                                    <li class="mb-1">
+                                        <span class="fw-semibold">{{ $subject->name }}</span>
+                                        @if($subject->grade_level)
+                                            <span class="text-muted small">({{ $subject->grade_level }})</span>
+                                        @endif
+                                        @php($classrooms = $subject->classrooms->where('pivot.teacher_id', $teacher->id))
+                                        @if($classrooms->isNotEmpty())
+                                            <div class="text-muted small">الفصول: {{ $classrooms->pluck('name')->implode('، ') }}</div>
+                                        @endif
+                                    </li>
+                                @empty
+                                    <li class="text-muted">لم يتم إسناد مواد حتى الآن.</li>
+                                @endforelse
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-semibold mb-2"><i class="fas fa-school me-2"></i> الفصول المسندة</h6>
+                            <ul class="list-unstyled mb-0">
+                                @forelse($teacher->teachingClassrooms as $classroom)
+                                    <li class="mb-1">
+                                        <span class="fw-semibold">{{ $classroom->name }}</span>
+                                        @if($classroom->grade_level)
+                                            <span class="text-muted small">({{ $classroom->grade_level }})</span>
+                                        @endif
+                                    </li>
+                                @empty
+                                    <li class="text-muted">لم يتم ربط فصول بعد.</li>
+                                @endforelse
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="card shadow-sm">
                 <div class="card-header bg-white">
                     <h5 class="card-title mb-0">ملاحظات إضافية</h5>

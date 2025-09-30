@@ -73,9 +73,24 @@
         <label class="form-label">تاريخ التعيين</label>
         <input type="date" name="hire_date" value="{{ old('hire_date', optional(optional($teacher->teacherProfile ?? null)->hire_date)->format('Y-m-d')) }}" class="form-control">
     </div>
-    <div class="col-md-5">
+    <div class="col-md-4">
         <label class="form-label">المواد الدراسية</label>
         <input type="text" name="subjects" value="{{ old('subjects', collect(optional($teacher->teacherProfile ?? null)->subjects)->implode(', ')) }}" class="form-control" placeholder="اكتب المواد مفصولة بفاصلة">
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">اختر من المواد المسجلة</label>
+        <select name="subject_ids[]" class="form-select" multiple size="5">
+            @php($selectedSubjects = collect(old('subject_ids', $editing ? $teacher->teachingSubjects->pluck('id')->toArray() : []))->map(fn($id) => (int) $id)->all())
+            @foreach($subjects as $subject)
+                <option value="{{ $subject->id }}" @selected(in_array($subject->id, $selectedSubjects, true))>
+                    {{ $subject->name }}
+                    @if($subject->grade_level)
+                        ({{ $subject->grade_level }})
+                    @endif
+                </option>
+            @endforeach
+        </select>
+        <small class="text-muted">يمكن اختيار أكثر من مادة بالضغط على Ctrl أو Shift.</small>
     </div>
     <div class="col-md-4">
         <label class="form-label">ساعات التواجد</label>
