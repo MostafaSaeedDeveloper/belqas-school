@@ -7,6 +7,10 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Project Setup Notes
+
+This project relies on the PHP `mbstring` extension for text pattern matching that powers code syntax highlighting within the administration area. Ensure the extension is enabled in your PHP installation to avoid `Phiki\\Exceptions\\FailedToInitializePatternSearchException` errors when rendering highlighted content.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
