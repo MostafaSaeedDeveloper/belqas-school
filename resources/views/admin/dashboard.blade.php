@@ -3,233 +3,318 @@
 @section('title', 'لوحة التحكم - نظام إدارة مدرسة بلقاس')
 
 @section('page-header')
-@section('page-title', 'لوحة التحكم')
-@section('page-subtitle', 'واجهة مبسطة لمتابعة أهم المؤشرات اليومية')
-
-@section('breadcrumb')
-    <li class="breadcrumb-item active">لوحة التحكم</li>
-@endsection
+    @section('page-title', 'لوحة التحكم')
+    @section('page-subtitle', 'متابعة شاملة لأداء المدرسة ومؤشراتها اليومية')
+    @section('breadcrumb')
+        <li class="breadcrumb-item active">لوحة التحكم</li>
+    @endsection
 @endsection
 
 @section('content')
-<div class="dashboard-page">
-    <section class="dashboard-intro">
-        <div class="intro-text">
-            <span class="intro-eyebrow">اليوم {{ now()->translatedFormat('d F Y') }}</span>
+<div class="dashboard-shell">
+    <header class="dashboard-hero">
+        <div class="hero-details">
+            <p class="hero-date">{{ now()->translatedFormat('l d F Y') }}</p>
             <h1>مرحباً بعودتك، {{ auth()->user()?->name ?? 'مدير النظام' }}</h1>
-            <p class="intro-lead">استعرض أداء المدرسة وابدأ يومك بخطوات واضحة. تم تبسيط لوحة التحكم لتركز على المؤشرات الأساسية والمهام اليومية الأهم.</p>
+            <p class="hero-description">
+                صممت لوحة التحكم الجديدة لتمنحك رؤية واضحة حول الأداء الأكاديمي والتشغيلي، مع إمكانية الوصول
+                الفوري لأهم الإجراءات اليومية.
+            </p>
+            <div class="hero-actions">
+                <a href="{{ route('reports.index') }}" class="hero-action hero-action-primary">
+                    <i class="fas fa-poll"></i>
+                    استعراض تقارير الأداء
+                </a>
+                <a href="{{ route('events.index') }}" class="hero-action hero-action-secondary">
+                    <i class="fas fa-calendar-week"></i>
+                    مراجعة جدول الفعاليات
+                </a>
+            </div>
+            <div class="hero-filters">
+                <span class="filters-label">نطاق العرض</span>
+                <div class="filters-chips">
+                    <button type="button" class="filter-chip is-active">هذا الأسبوع</button>
+                    <button type="button" class="filter-chip">هذا الشهر</button>
+                    <button type="button" class="filter-chip">ربع سنوي</button>
+                </div>
+            </div>
         </div>
-        <div class="intro-actions">
-            <a href="{{ route('reports.index') }}" class="intro-btn intro-btn-primary">
-                <i class="fas fa-chart-line"></i>
-                عرض التقارير التفصيلية
-            </a>
-            <a href="{{ route('events.index') }}" class="intro-btn intro-btn-light">
-                <i class="fas fa-calendar"></i>
-                فتح التقويم
-            </a>
+        <div class="hero-summary">
+            <div class="hero-summary-card">
+                <span class="hero-summary-label">الطلاب المسجلون</span>
+                <strong class="hero-summary-value" data-stat="students">0</strong>
+                <small>+12% خلال هذا الشهر</small>
+            </div>
+            <div class="hero-summary-card">
+                <span class="hero-summary-label">معدل الحضور اليومي</span>
+                <strong class="hero-summary-value" data-stat="attendance">0%</strong>
+                <small>مقارنة بالأسبوع الماضي</small>
+            </div>
+            <div class="hero-summary-card">
+                <span class="hero-summary-label">طلبات التسجيل الجديدة</span>
+                <strong class="hero-summary-value">18</strong>
+                <small>4 بانتظار الاعتماد</small>
+            </div>
         </div>
-    </section>
+    </header>
 
-    <section class="dashboard-metrics">
+    <section class="dashboard-overview">
         <div class="section-heading">
-            <h2>المؤشرات الأساسية</h2>
-            <span class="section-subtle">آخر تحديث منذ 10 دقائق</span>
+            <div>
+                <h2>نظرة سريعة على المؤشرات</h2>
+                <p class="section-subtitle">قياس مستمر للأداء الأكاديمي والتشغيلي في المدرسة</p>
+            </div>
+            <button type="button">تحديث البيانات</button>
         </div>
-        <div class="metrics-grid">
+        <div class="overview-metrics">
             <article class="metric-card">
-                <div class="metric-header">
+                <header class="metric-header">
                     <span>الطلاب</span>
-                    <span class="metric-delta positive">
-                        <i class="fas fa-arrow-up"></i>
+                    <span class="metric-delta metric-delta-positive">
+                        <i class="fas fa-arrow-trend-up"></i>
                         12%
                     </span>
-                </div>
+                </header>
                 <div class="metric-value" data-stat="students">0</div>
-                <p class="metric-subtitle">إجمالي الطلاب المسجلين</p>
+                <p class="metric-footnote">إجمالي الطلاب المسجلين خلال العام الدراسي الحالي</p>
             </article>
-
             <article class="metric-card">
-                <div class="metric-header">
+                <header class="metric-header">
                     <span>المعلمون</span>
-                    <span class="metric-delta neutral">
-                        <i class="fas fa-equals"></i>
+                    <span class="metric-delta metric-delta-neutral">
+                        <i class="fas fa-circle-notch"></i>
                         مستقر
                     </span>
-                </div>
+                </header>
                 <div class="metric-value" data-stat="teachers">0</div>
-                <p class="metric-subtitle">طاقم التدريس النشط</p>
+                <p class="metric-footnote">أعضاء هيئة التدريس النشطون ضمن الجداول الحالية</p>
             </article>
-
             <article class="metric-card">
-                <div class="metric-header">
-                    <span>الفصول</span>
-                    <span class="metric-delta positive">
-                        <i class="fas fa-arrow-up"></i>
+                <header class="metric-header">
+                    <span>الفصول الدراسية</span>
+                    <span class="metric-delta metric-delta-positive">
+                        <i class="fas fa-plus"></i>
                         +3
                     </span>
-                </div>
+                </header>
                 <div class="metric-value" data-stat="classes">0</div>
-                <p class="metric-subtitle">عدد الفصول العاملة</p>
+                <p class="metric-footnote">الفصول المفتوحة حالياً وجاهزية القاعات التعليمية</p>
             </article>
-
             <article class="metric-card">
-                <div class="metric-header">
-                    <span>الحضور</span>
-                    <span class="metric-delta negative">
-                        <i class="fas fa-arrow-down"></i>
+                <header class="metric-header">
+                    <span>نسبة الحضور</span>
+                    <span class="metric-delta metric-delta-negative">
+                        <i class="fas fa-arrow-trend-down"></i>
                         -1%
                     </span>
-                </div>
+                </header>
                 <div class="metric-value" data-stat="attendance">0%</div>
-                <p class="metric-subtitle">متوسط نسبة الحضور اليومي</p>
+                <p class="metric-footnote">متوسط الحضور اليومي على مستوى المدرسة</p>
             </article>
         </div>
     </section>
 
-    <section class="dashboard-panels">
-        <article class="panel-card">
-            <header class="panel-header">
-                <div>
-                    <h2 class="panel-title">تقدم التسجيل</h2>
-                    <p class="panel-subtitle">مقارنة بين الأشهر الستة الأخيرة</p>
+    <section class="dashboard-main-grid">
+        <div class="dashboard-primary">
+            <article class="card insight-card">
+                <header class="card-header">
+                    <div>
+                        <h3>تطور التسجيل خلال العام</h3>
+                        <p>قراءة شهرية لأعداد الطلاب الجدد عبر الأقسام</p>
+                    </div>
+                    <button type="button">تصدير</button>
+                </header>
+                <div class="insight-placeholder" id="enrollment-chart">
+                    سيتم إظهار مخطط تفاعلي عند تفعيل التكامل مع البيانات الحية.
                 </div>
-                <span class="section-subtle">يتم التحديث تلقائياً</span>
-            </header>
-            <div class="panel-placeholder" id="students-chart">
-                سيتم عرض المخطط عند تفعيل التكامل مع البيانات.
-            </div>
-        </article>
+            </article>
 
-        <article class="panel-card">
-            <header class="panel-header">
-                <div>
-                    <h2 class="panel-title">معدل الحضور</h2>
-                    <p class="panel-subtitle">متابعة سريعة للفصول ذات النسب المنخفضة</p>
+            <article class="card performance-card">
+                <header class="card-header">
+                    <div>
+                        <h3>أداء الأقسام الأكاديمية</h3>
+                        <p>مقارنة بين نسب الإنجاز وخطط المتابعة لكل قسم</p>
+                    </div>
+                    <span class="badge badge-success">محدّث الآن</span>
+                </header>
+                <div class="progress-rows">
+                    <div class="progress-row">
+                        <span>المرحلة الابتدائية</span>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: 78%"></div>
+                        </div>
+                        <span class="progress-value">78%</span>
+                    </div>
+                    <div class="progress-row">
+                        <span>المرحلة الإعدادية</span>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: 64%"></div>
+                        </div>
+                        <span class="progress-value">64%</span>
+                    </div>
+                    <div class="progress-row">
+                        <span>المرحلة الثانوية</span>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: 82%"></div>
+                        </div>
+                        <span class="progress-value">82%</span>
+                    </div>
                 </div>
-                <span class="section-subtle">آخر تحديث منذ ساعة</span>
-            </header>
-            <div class="panel-placeholder" id="attendance-chart">
-                سيتم عرض المخطط عند تفعيل التكامل مع البيانات.
-            </div>
-        </article>
+            </article>
 
-        <article class="panel-card">
-            <header class="panel-header">
-                <div>
-                    <h2 class="panel-title">أولويات اليوم</h2>
-                    <p class="panel-subtitle">قائمة مختصرة بالمهام العاجلة</p>
-                </div>
-            </header>
-            <div class="panel-list">
-                <div class="panel-list-item">
+            <article class="card tasks-card">
+                <header class="card-header">
                     <div>
-                        <p class="panel-list-title">متابعة غياب طلاب الصف الثالث</p>
-                        <p class="panel-list-desc">3 طلاب بحاجة لتواصل مع أولياء الأمور</p>
+                        <h3>متابعة المهام التنفيذية</h3>
+                        <p>خطوات مقترحة لضمان استقرار العمليات اليومية</p>
                     </div>
-                    <span class="panel-chip">متابعة</span>
-                </div>
-                <div class="panel-list-item">
+                    <a href="{{ route('tasks.index') }}">عرض كل المهام</a>
+                </header>
+                <ul class="tasks-list">
+                    <li class="tasks-item">
+                        <div>
+                            <h4>مراجعة حالات الغياب المرتفعة</h4>
+                            <p>راجع تقارير الحضور لفصول الصف الثالث المتوسطة ونسّق مع أولياء الأمور.</p>
+                        </div>
+                        <span class="badge">أولوية عالية</span>
+                    </li>
+                    <li class="tasks-item">
+                        <div>
+                            <h4>تحضير تقرير الأداء الأسبوعي</h4>
+                            <p>جمع مؤشرات الأقسام الأكاديمية وإرسالها إلى الإدارة العليا قبل نهاية اليوم.</p>
+                        </div>
+                        <span class="badge badge-info">قيد المتابعة</span>
+                    </li>
+                    <li class="tasks-item">
+                        <div>
+                            <h4>اعتماد طلبات التسجيل الجديدة</h4>
+                            <p>تحقق من اكتمال المستندات وخصص الفصول المناسبة للطلاب الجدد.</p>
+                        </div>
+                        <span class="badge badge-warning">5 طلبات</span>
+                    </li>
+                </ul>
+            </article>
+        </div>
+
+        <aside class="dashboard-secondary">
+            <article class="card schedule-card">
+                <header class="card-header">
                     <div>
-                        <p class="panel-list-title">إرسال تقرير أسبوعي للمعلمين</p>
-                        <p class="panel-list-desc">جهز التقرير ليرسل نهاية اليوم</p>
+                        <h3>جدول اليوم</h3>
+                        <p>أبرز الاجتماعات والفعاليات الأكاديمية</p>
                     </div>
-                    <span class="panel-chip">اليوم</span>
+                    <a href="{{ route('events.index') }}">إدارة التقويم</a>
+                </header>
+                <div class="schedule-list">
+                    <div class="schedule-item">
+                        <div>
+                            <strong>09:00 ص</strong>
+                            <span>اجتماع متابعة المرحلة الابتدائية</span>
+                        </div>
+                        <span>قاعة الاجتماعات</span>
+                    </div>
+                    <div class="schedule-item">
+                        <div>
+                            <strong>11:30 ص</strong>
+                            <span>ورشة تدريبية للمعلمين الجدد</span>
+                        </div>
+                        <span>مركز التطوير</span>
+                    </div>
+                    <div class="schedule-item">
+                        <div>
+                            <strong>01:00 م</strong>
+                            <span>مراجعة حالات السداد المتأخرة</span>
+                        </div>
+                        <span>الإدارة المالية</span>
+                    </div>
                 </div>
-                <div class="panel-list-item">
+            </article>
+
+            <article class="card announcements-card">
+                <header class="card-header">
                     <div>
-                        <p class="panel-list-title">مراجعة طلبات تسجيل جديدة</p>
-                        <p class="panel-list-desc">طلبات بانتظار الاعتماد</p>
+                        <h3>آخر التحديثات</h3>
+                        <p>رسائل داخلية وتوصيات من الأقسام المختلفة</p>
                     </div>
-                    <span class="panel-chip">5 طلبات</span>
+                    <a href="{{ route('activity.index') }}">عرض الكل</a>
+                </header>
+                <ul class="announcement-list">
+                    <li>
+                        <h4>اعتماد غياب أحمد علي</h4>
+                        <span>منذ 15 دقيقة • الصف الثاني الثانوي</span>
+                    </li>
+                    <li>
+                        <h4>إضافة معلم لقسم العلوم</h4>
+                        <span>منذ ساعة • إدارة الموارد البشرية</span>
+                    </li>
+                    <li>
+                        <h4>تنبيه لأولياء أمور الصف الرابع</h4>
+                        <span>منذ ساعتين • تذكير بامتحان منتصف الفصل</span>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="card support-card">
+                <header class="card-header">
+                    <div>
+                        <h3>مركز الدعم السريع</h3>
+                        <p>تواصل مع الفرق المختصة لمتابعة الطلبات العاجلة</p>
+                    </div>
+                </header>
+                <div class="support-grid">
+                    <div class="support-tile">
+                        <span class="support-title">الموارد البشرية</span>
+                        <p>متابعة تعيين المعلمين والحضور.</p>
+                        <a href="mailto:hr@belqas-school.edu">hr@belqas-school.edu</a>
+                    </div>
+                    <div class="support-tile">
+                        <span class="support-title">الدعم الفني</span>
+                        <p>الإبلاغ عن مشكلات المنصة أو حسابات المستخدمين.</p>
+                        <a href="mailto:support@belqas-school.edu">support@belqas-school.edu</a>
+                    </div>
                 </div>
-            </div>
-        </article>
+            </article>
+        </aside>
     </section>
 
-    <section class="quick-actions-wrap">
+    <section class="quick-actions-section">
         <div class="section-heading">
-            <h2>عمليات سريعة</h2>
+            <div>
+                <h2>إجراءات سريعة</h2>
+                <p class="section-subtitle">إبدأ عملك اليومي بخطوة واحدة</p>
+            </div>
             <a href="{{ route('activity.index') }}">سجل النشاط</a>
         </div>
-        <div class="quick-actions">
+        <div class="quick-actions-grid">
             <a href="{{ route('students.create') }}" class="quick-action">
-                <strong>إضافة طالب</strong>
-                <span>إدخال بيانات طالب جديد وربطه بالفصل المناسب.</span>
+                <div class="quick-icon"><i class="fas fa-user-plus"></i></div>
+                <div>
+                    <strong>إضافة طالب جديد</strong>
+                    <span>إدخال بيانات طالب وربطها بالفصل المناسب خلال دقائق.</span>
+                </div>
             </a>
             <a href="{{ route('teachers.create') }}" class="quick-action">
-                <strong>تعيين معلم</strong>
-                <span>تسجيل معلم جديد وتحديد المواد المكلف بها.</span>
+                <div class="quick-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                <div>
+                    <strong>تعيين معلم</strong>
+                    <span>تحديد المواد المكلف بها المعلم وإشعاره بالجدول.</span>
+                </div>
             </a>
             <a href="{{ route('attendance.daily') }}" class="quick-action">
-                <strong>تحديث الحضور</strong>
-                <span>إدخال نسب الحضور اليومية لكل فصل.</span>
+                <div class="quick-icon"><i class="fas fa-clipboard-check"></i></div>
+                <div>
+                    <strong>تحديث بيانات الحضور</strong>
+                    <span>إدخال نسب الحضور اليومية وتوثيق حالات الغياب المتكررة.</span>
+                </div>
             </a>
             <a href="{{ route('finance.index') }}" class="quick-action">
-                <strong>متابعة المالية</strong>
-                <span>استعراض التحصيل والمدفوعات الحديثة.</span>
+                <div class="quick-icon"><i class="fas fa-coins"></i></div>
+                <div>
+                    <strong>متابعة الحالة المالية</strong>
+                    <span>استعرض التحصيل والمدفوعات وخطط السداد القادمة.</span>
+                </div>
             </a>
         </div>
-    </section>
-
-    <section class="dashboard-bottom">
-        <article class="activity-feed">
-            <div class="section-heading">
-                <h2>النشاط الأخير</h2>
-                <a href="{{ route('activity.index') }}">عرض الكل</a>
-            </div>
-            <div class="activity-item">
-                <div class="activity-body">
-                    <p class="activity-title">تم اعتماد غياب أحمد علي</p>
-                    <span class="activity-meta">منذ 15 دقيقة • الصف الثاني الثانوي</span>
-                </div>
-                <span class="panel-chip">حضور</span>
-            </div>
-            <div class="activity-item">
-                <div class="activity-body">
-                    <p class="activity-title">إضافة معلم جديد لقسم العلوم</p>
-                    <span class="activity-meta">منذ ساعة • بواسطة إدارة الموارد البشرية</span>
-                </div>
-                <span class="panel-chip">الموارد</span>
-            </div>
-            <div class="activity-item">
-                <div class="activity-body">
-                    <p class="activity-title">إرسال تنبيه لأولياء أمور الصف الرابع</p>
-                    <span class="activity-meta">منذ ساعتين • تذكير بامتحان منتصف الفصل</span>
-                </div>
-                <span class="panel-chip">تنبيه</span>
-            </div>
-        </article>
-
-        <article class="schedule-card">
-            <div class="section-heading">
-                <h2>جدول اليوم</h2>
-                <a href="{{ route('events.index') }}">إدارة التقويم</a>
-            </div>
-            <div class="schedule-list">
-                <div class="schedule-item">
-                    <div>
-                        <strong>09:00 ص</strong>
-                        <span>اجتماع فريق المرحلة الابتدائية</span>
-                    </div>
-                    <span>قاعة الاجتماعات</span>
-                </div>
-                <div class="schedule-item">
-                    <div>
-                        <strong>11:30 ص</strong>
-                        <span>جلسة تدريب للمعلمين الجدد</span>
-                    </div>
-                    <span>مركز التطوير</span>
-                </div>
-                <div class="schedule-item">
-                    <div>
-                        <strong>01:00 م</strong>
-                        <span>متابعة حالات السداد المتأخرة</span>
-                    </div>
-                    <span>الإدارة المالية</span>
-                </div>
-            </div>
-        </article>
     </section>
 </div>
 @endsection
@@ -237,7 +322,7 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        console.log('لوحة التحكم ذات التصميم البسيط جاهزة');
+        console.log('تم تهيئة لوحة التحكم بالتصميم الاحترافي الجديد');
     });
 </script>
 @endpush
