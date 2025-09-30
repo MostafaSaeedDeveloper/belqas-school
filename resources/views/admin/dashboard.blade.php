@@ -12,74 +12,191 @@
 @endsection
 
 @section('content')
+<!-- Dashboard Hero -->
+<div class="dashboard-hero">
+    <div class="hero-content">
+        <span class="hero-badge">
+            <i class="fas fa-chart-pie"></i>
+            نظرة عامة سريعة
+        </span>
+        <h1 class="hero-title">مرحباً بعودتك، {{ auth()->user()?->name ?? 'مدير النظام' }}</h1>
+        <p class="hero-subtitle">تابع أداء المدرسة عبر ملخص تفاعلي يساعدك على اتخاذ القرارات بشكل أسرع وأكثر دقة.</p>
+
+        <div class="hero-meta">
+            <div class="meta-item">
+                <span class="meta-label">تقارير اليوم</span>
+                <span class="meta-value">12</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">طلبات الانتظار</span>
+                <span class="meta-value">4</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">رسائل جديدة</span>
+                <span class="meta-value">8</span>
+            </div>
+        </div>
+    </div>
+    <div class="hero-actions">
+        <a href="{{ route('reports.index') }}" class="hero-btn primary">
+            <i class="fas fa-chart-line"></i>
+            عرض تقرير الأداء
+        </a>
+        <a href="{{ route('activity.index') }}" class="hero-btn ghost">
+            <i class="fas fa-history"></i>
+            متابعة النشاط
+        </a>
+    </div>
+</div>
+
 <!-- Statistics Cards -->
 <div class="stats-grid">
     <!-- Students Card -->
     <div class="stat-card" data-type="students">
+        <div class="stat-card-pattern"></div>
         <div class="stat-card-header">
-            <div class="stat-icon students">
+            <span class="stat-badge">
                 <i class="fas fa-user-graduate"></i>
-            </div>
-        </div>
-        <div class="stat-content">
-            <div class="stat-number" data-stat="students">0</div>
-            <div class="stat-label">إجمالي الطلاب</div>
-            <div class="stat-change positive">
+                الطلاب
+            </span>
+            <span class="stat-trend positive">
                 <i class="fas fa-arrow-up"></i>
-                <span>+12% من الشهر الماضي</span>
+                12%
+            </span>
+        </div>
+        <div class="stat-main">
+            <div class="stat-number" data-stat="students">0</div>
+            <p class="stat-label">إجمالي الطلاب المسجلين</p>
+        </div>
+        <div class="stat-footer">
+            <div class="stat-progress">
+                <span class="progress-label">معدل الالتحاق السنوي</span>
+                <div class="progress-bar">
+                    <span style="width: 78%"></span>
+                </div>
             </div>
+            <span class="stat-note"><i class="fas fa-clock"></i> تحديث منذ 3 دقائق</span>
         </div>
     </div>
 
     <!-- Teachers Card -->
     <div class="stat-card" data-type="teachers">
+        <div class="stat-card-pattern"></div>
         <div class="stat-card-header">
-            <div class="stat-icon teachers">
+            <span class="stat-badge">
                 <i class="fas fa-chalkboard-teacher"></i>
-            </div>
+                المعلمون
+            </span>
+            <span class="stat-trend positive">
+                <i class="fas fa-user-plus"></i>
+                +3
+            </span>
         </div>
-        <div class="stat-content">
+        <div class="stat-main">
             <div class="stat-number" data-stat="teachers">0</div>
-            <div class="stat-label">المعلمين</div>
-            <div class="stat-change positive">
-                <i class="fas fa-arrow-up"></i>
-                <span>+3 معلمين جدد</span>
+            <p class="stat-label">طاقم التدريس النشط</p>
+        </div>
+        <div class="stat-footer">
+            <div class="stat-progress">
+                <span class="progress-label">نسبة تغطية الفصول</span>
+                <div class="progress-bar">
+                    <span style="width: 92%"></span>
+                </div>
             </div>
+            <span class="stat-note"><i class="fas fa-user-shield"></i> 96% رضا المعلمين</span>
         </div>
     </div>
 
     <!-- Classes Card -->
     <div class="stat-card" data-type="classes">
+        <div class="stat-card-pattern"></div>
         <div class="stat-card-header">
-            <div class="stat-icon classes">
+            <span class="stat-badge">
                 <i class="fas fa-school"></i>
-            </div>
+                الفصول
+            </span>
+            <span class="stat-trend neutral">
+                <i class="fas fa-circle-notch"></i>
+                مستقر
+            </span>
         </div>
-        <div class="stat-content">
+        <div class="stat-main">
             <div class="stat-number" data-stat="classes">0</div>
-            <div class="stat-label">الفصول الدراسية</div>
-            <div class="stat-change neutral">
-                <i class="fas fa-minus"></i>
-                <span>لا توجد تغييرات</span>
+            <p class="stat-label">عدد الفصول العاملة</p>
+        </div>
+        <div class="stat-footer">
+            <div class="stat-progress">
+                <span class="progress-label">استخدام الطاقة الاستيعابية</span>
+                <div class="progress-bar">
+                    <span style="width: 64%"></span>
+                </div>
             </div>
+            <span class="stat-note"><i class="fas fa-info-circle"></i> 5 فصول بحاجة لمتابعة</span>
         </div>
     </div>
 
     <!-- Attendance Card -->
     <div class="stat-card" data-type="attendance">
+        <div class="stat-card-pattern"></div>
         <div class="stat-card-header">
-            <div class="stat-icon attendance">
+            <span class="stat-badge">
                 <i class="fas fa-calendar-check"></i>
-            </div>
+                الحضور
+            </span>
+            <span class="stat-trend positive">
+                <i class="fas fa-arrow-trend-up"></i>
+                +2%
+            </span>
         </div>
-        <div class="stat-content">
+        <div class="stat-main">
             <div class="stat-number" data-stat="attendance">0</div>
-            <div class="stat-label">نسبة الحضور %</div>
-            <div class="stat-change positive">
-                <i class="fas fa-arrow-up"></i>
-                <span>+2% من الأسبوع الماضي</span>
-            </div>
+            <p class="stat-label">نسبة الحضور اليومية</p>
         </div>
+        <div class="stat-footer">
+            <div class="stat-progress">
+                <span class="progress-label">الالتزام بالخطة الأسبوعية</span>
+                <div class="progress-bar">
+                    <span style="width: 84%"></span>
+                </div>
+            </div>
+            <span class="stat-note"><i class="fas fa-bell"></i> 3 تنبيهات متأخرة</span>
+        </div>
+    </div>
+</div>
+
+<!-- Performance Snapshots -->
+<div class="performance-section">
+    <div class="performance-card">
+        <div class="performance-icon success">
+            <i class="fas fa-medal"></i>
+        </div>
+        <div class="performance-details">
+            <h3>أفضل أداء أكاديمي</h3>
+            <p>الصف الثاني الثانوي - نسبة النجاح 98%</p>
+        </div>
+        <span class="performance-badge">+6 نقاط</span>
+    </div>
+
+    <div class="performance-card">
+        <div class="performance-icon info">
+            <i class="fas fa-lightbulb"></i>
+        </div>
+        <div class="performance-details">
+            <h3>مبادرات قيد التنفيذ</h3>
+            <p>4 مبادرات لتحسين التعلم الرقمي هذا الشهر</p>
+        </div>
+        <span class="performance-badge neutral">65% منجزة</span>
+    </div>
+
+    <div class="performance-card">
+        <div class="performance-icon warning">
+            <i class="fas fa-user-clock"></i>
+        </div>
+        <div class="performance-details">
+            <h3>متابعة الحضور</h3>
+            <p>7 طلاب بحاجة للتواصل بسبب غياب متكرر</p>
+        </div>
+        <span class="performance-badge alert">يتطلب متابعة</span>
     </div>
 </div>
 
@@ -90,34 +207,70 @@
         العمليات السريعة
     </h2>
     <div class="actions-grid">
-        <a href="{{ route('students.create') }}" class="action-btn" data-action="add-student">
-            <i class="fas fa-user-plus"></i>
-            <span>إضافة طالب</span>
+        <a href="{{ route('students.create') }}" class="action-card" data-action="add-student">
+            <div class="action-icon primary">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <div class="action-info">
+                <h3>إضافة طالب جديد</h3>
+                <p>تسجيل طالب خلال خطوات بسيطة مع التحقق من البيانات.</p>
+            </div>
+            <span class="action-link">ابدأ الآن</span>
         </a>
 
-        <a href="{{ route('teachers.create') }}" class="action-btn" data-action="add-teacher">
-            <i class="fas fa-chalkboard-teacher"></i>
-            <span>إضافة معلم</span>
+        <a href="{{ route('teachers.create') }}" class="action-card" data-action="add-teacher">
+            <div class="action-icon success">
+                <i class="fas fa-chalkboard-teacher"></i>
+            </div>
+            <div class="action-info">
+                <h3>إضافة معلم</h3>
+                <p>تعيين معلم جديد وربطه بالفصول والمقررات المناسبة.</p>
+            </div>
+            <span class="action-link">متابعة</span>
         </a>
 
-        <a href="{{ route('attendance.daily') }}" class="action-btn" data-action="take-attendance">
-            <i class="fas fa-calendar-check"></i>
-            <span>أخذ الحضور</span>
+        <a href="{{ route('attendance.daily') }}" class="action-card" data-action="take-attendance">
+            <div class="action-icon info">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="action-info">
+                <h3>تسجيل الحضور</h3>
+                <p>تحديث حضور الطلاب اليومي ومتابعة الغيابات المتكررة.</p>
+            </div>
+            <span class="action-link">سجّل الآن</span>
         </a>
 
-        <a href="{{ route('reports.index') }}" class="action-btn" data-action="view-reports">
-            <i class="fas fa-chart-bar"></i>
-            <span>عرض التقارير</span>
+        <a href="{{ route('reports.index') }}" class="action-card" data-action="view-reports">
+            <div class="action-icon purple">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <div class="action-info">
+                <h3>عرض التقارير</h3>
+                <p>تحليلات تفاعلية حول الأداء الأكاديمي والإداري.</p>
+            </div>
+            <span class="action-link">عرض التفاصيل</span>
         </a>
 
-        <a href="{{ route('classes.index') }}" class="action-btn" data-action="manage-classes">
-            <i class="fas fa-school"></i>
-            <span>إدارة الفصول</span>
+        <a href="{{ route('classes.index') }}" class="action-card" data-action="manage-classes">
+            <div class="action-icon warning">
+                <i class="fas fa-school"></i>
+            </div>
+            <div class="action-info">
+                <h3>إدارة الفصول</h3>
+                <p>تنظيم الجداول الدراسية وتوزيع الطلبة على الفصول.</p>
+            </div>
+            <span class="action-link">تنظيم الآن</span>
         </a>
 
-        <a href="{{ route('finance.index') }}" class="action-btn" data-action="financial-overview">
-            <i class="fas fa-money-bill-wave"></i>
-            <span>الشؤون المالية</span>
+        <a href="{{ route('finance.index') }}" class="action-card" data-action="financial-overview">
+            <div class="action-icon danger">
+                <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <div class="action-info">
+                <h3>إدارة الشؤون المالية</h3>
+                <p>متابعة المصروفات والإيرادات مع نظرة تفصيلية للتحصيل.</p>
+            </div>
+            <span class="action-link">تصفح السجلات</span>
         </a>
     </div>
 </div>
@@ -127,8 +280,14 @@
     <!-- Students Growth Chart -->
     <div class="chart-card">
         <div class="chart-header">
-            <h3 class="chart-title">نمو أعداد الطلاب</h3>
-            <span class="chart-period">آخر 6 أشهر</span>
+            <div>
+                <h3 class="chart-title">نمو أعداد الطلاب</h3>
+                <p class="chart-description">معدل التسجيل الشهري ومؤشرات الاستمرارية خلال العام الحالي.</p>
+            </div>
+            <div class="chart-toolbar">
+                <button class="chart-filter active">6 أشهر</button>
+                <button class="chart-filter">سنة كاملة</button>
+            </div>
         </div>
         <div class="chart-container" id="students-chart">
             <!-- Chart will be rendered by JavaScript -->
@@ -138,8 +297,14 @@
     <!-- Attendance Rate Chart -->
     <div class="chart-card">
         <div class="chart-header">
-            <h3 class="chart-title">معدل الحضور الأسبوعي</h3>
-            <span class="chart-period">آخر 6 أسابيع</span>
+            <div>
+                <h3 class="chart-title">معدل الحضور الأسبوعي</h3>
+                <p class="chart-description">مقارنة بين الصفوف مع تحديد الفروقات البارزة في نسب الحضور.</p>
+            </div>
+            <div class="chart-toolbar">
+                <button class="chart-filter active">6 أسابيع</button>
+                <button class="chart-filter">13 أسبوع</button>
+            </div>
         </div>
         <div class="chart-container" id="attendance-chart">
             <!-- Chart will be rendered by JavaScript -->
