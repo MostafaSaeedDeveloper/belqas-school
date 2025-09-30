@@ -1,0 +1,10 @@
+{
+    "name": "Teachers",
+    "alias": "teachers",
+    "description": "إدارة سجلات المعلمين والبيانات الوظيفية.",
+    "keywords": ["teachers", "staff", "schedules"],
+    "priority": 6,
+    "providers": [
+        "Modules\\Teachers\\Providers\\TeachersServiceProvider"
+    ]
+}

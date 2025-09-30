@@ -75,6 +75,7 @@ class DefaultUsersSeeder extends Seeder
                 $role = Role::where('name', $roleName)->first();
                 if ($role) {
                     $user->assignRole($role);
+                    $this->createDefaultProfile($user, $roleName);
                     $this->command->info("✅ {$user->name} - Username: {$user->username} - {$role->display_name}");
                     $count++;
                 } else {
@@ -97,6 +98,39 @@ class DefaultUsersSeeder extends Seeder
             $this->command->info('   Username: parent    - Password: 123456789');
             $this->command->info('   Username: accountant- Password: 123456789');
             $this->command->warn('⚠️  يرجى تغيير كلمات المرور بعد أول تسجيل دخول!');
+        }
+    }
+
+    /**
+     * Create default profile for seeded teacher/student.
+     */
+    protected function createDefaultProfile(User $user, string $roleName): void
+    {
+        if ($roleName === 'student') {
+            $user->studentProfile()->create([
+                'student_code' => 'STU-' . str_pad((string) $user->id, 4, '0', STR_PAD_LEFT),
+                'grade_level' => 'الصف الأول الإعدادي',
+                'classroom' => 'A',
+                'enrollment_date' => now()->subYears(1)->startOfYear(),
+                'guardian_name' => 'محمد علي',
+                'guardian_phone' => '01000000000',
+                'address' => 'مدينة بلقاس - الدقهلية',
+            ]);
+
+            return;
+        }
+
+        if ($roleName === 'teacher') {
+            $user->teacherProfile()->create([
+                'teacher_code' => 'TEA-' . str_pad((string) $user->id, 4, '0', STR_PAD_LEFT),
+                'specialization' => 'اللغة العربية',
+                'qualification' => 'ليسانس تربية',
+                'hire_date' => now()->subYears(5)->startOfYear(),
+                'experience_years' => 5,
+                'subjects' => ['اللغة العربية', 'الخط العربي'],
+                'office_hours' => 'الأحد - الخميس 08:00 ص - 02:00 م',
+                'address' => 'مدينة بلقاس - الدقهلية',
+            ]);
         }
     }
 }
