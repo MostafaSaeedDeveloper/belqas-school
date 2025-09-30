@@ -18,42 +18,6 @@ Route::middleware(['auth'])->group(function () {
     // Main Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Students Routes
-    Route::prefix('students')->name('students.')->group(function () {
-        Route::get('/', function() { return view('students.index'); })->name('index')->middleware('can:view_students');
-        Route::get('/create', function() { return view('students.create'); })->name('create')->middleware('can:create_students');
-        Route::get('/{student}', function() { return view('students.show'); })->name('show')->middleware('can:view_students');
-        Route::get('/{student}/edit', function() { return view('students.edit'); })->name('edit')->middleware('can:edit_students');
-        Route::get('/reports', function() { return view('students.reports'); })->name('reports')->middleware('can:view_students');
-    });
-
-    // Teachers Routes
-    Route::prefix('teachers')->name('teachers.')->group(function () {
-        Route::get('/', function() { return view('teachers.index'); })->name('index')->middleware('can:view_teachers');
-        Route::get('/create', function() { return view('teachers.create'); })->name('create')->middleware('can:create_teachers');
-        Route::get('/{teacher}', function() { return view('teachers.show'); })->name('show')->middleware('can:view_teachers');
-        Route::get('/{teacher}/edit', function() { return view('teachers.edit'); })->name('edit')->middleware('can:edit_teachers');
-        Route::get('/schedules', function() { return view('teachers.schedules'); })->name('schedules')->middleware('can:view_teachers');
-    });
-
-    // Classes Routes
-    Route::prefix('classes')->name('classes.')->group(function () {
-        Route::get('/', function() { return view('classes.index'); })->name('index')->middleware('can:view_classes');
-        Route::get('/create', function() { return view('classes.create'); })->name('create')->middleware('can:create_classes');
-        Route::get('/{class}', function() { return view('classes.show'); })->name('show')->middleware('can:view_classes');
-        Route::get('/{class}/edit', function() { return view('classes.edit'); })->name('edit')->middleware('can:edit_classes');
-        Route::get('/timetables', function() { return view('classes.timetables'); })->name('timetables')->middleware('can:view_timetable');
-    });
-
-    // Subjects Routes
-    Route::prefix('subjects')->name('subjects.')->group(function () {
-        Route::get('/', function() { return view('subjects.index'); })->name('index')->middleware('can:view_subjects');
-        Route::get('/create', function() { return view('subjects.create'); })->name('create')->middleware('can:create_subjects');
-        Route::get('/{subject}', function() { return view('subjects.show'); })->name('show')->middleware('can:view_subjects');
-        Route::get('/{subject}/edit', function() { return view('subjects.edit'); })->name('edit')->middleware('can:edit_subjects');
-        Route::get('/assignments', function() { return view('subjects.assignments'); })->name('assignments')->middleware('can:view_subjects');
-    });
-
     // Attendance Routes
     Route::prefix('attendance')->name('attendance.')->group(function () {
         Route::get('/daily', function() { return view('attendance.daily'); })->name('daily')->middleware('can:view_attendance');

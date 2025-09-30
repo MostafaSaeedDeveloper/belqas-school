@@ -1,0 +1,8 @@
+{
+    "name": "Classes",
+    "alias": "classes",
+    "description": "إدارة الفصول الدراسية",
+    "providers": [
+        "Modules\\Classes\\Providers\\ClassesServiceProvider"
+    ]
+}

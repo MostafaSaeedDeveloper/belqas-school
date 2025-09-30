@@ -1,0 +1,10 @@
+{
+    "name": "Students",
+    "alias": "students",
+    "description": "إدارة بيانات الطلاب وسجلاتهم الدراسية.",
+    "keywords": ["students", "enrollment", "records"],
+    "priority": 10,
+    "providers": [
+        "Modules\\Students\\Providers\\StudentsServiceProvider"
+    ]
+}

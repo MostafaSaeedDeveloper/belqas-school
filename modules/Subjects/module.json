@@ -1,0 +1,8 @@
+{
+    "name": "Subjects",
+    "alias": "subjects",
+    "description": "إدارة المواد الدراسية",
+    "providers": [
+        "Modules\\Subjects\\Providers\\SubjectsServiceProvider"
+    ]
+}

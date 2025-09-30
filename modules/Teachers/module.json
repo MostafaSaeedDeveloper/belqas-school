@@ -1,0 +1,8 @@
+{
+    "name": "Teachers",
+    "alias": "teachers",
+    "description": "إدارة المعلمين",
+    "providers": [
+        "Modules\\Teachers\\Providers\\TeachersServiceProvider"
+    ]
+}

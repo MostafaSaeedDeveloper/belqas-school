@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,10 +27,10 @@ class ModuleServiceProvider extends ServiceProvider
                 continue;
             }
 
-            $serviceProvider = sprintf('Modules\\%s\\Providers\\%sServiceProvider', $moduleName, $moduleName);
-
-            if (class_exists($serviceProvider)) {
-                $this->app->register($serviceProvider);
+            foreach ($this->discoverModuleProviders($moduleDirectory, $moduleName) as $serviceProvider) {
+                if (class_exists($serviceProvider)) {
+                    $this->app->register($serviceProvider);
+                }
             }
         }
     }
@@ -48,5 +49,24 @@ class ModuleServiceProvider extends ServiceProvider
         $content = file_get_contents($path);
 
         return json_decode($content, true) ?: [];
+    }
+
+    /**
+     * Discover service providers declared within the module definition file.
+     */
+    protected function discoverModuleProviders(string $moduleDirectory, string $moduleName): array
+    {
+        $definitionPath = $moduleDirectory . DIRECTORY_SEPARATOR . 'module.json';
+
+        if (File::exists($definitionPath)) {
+            $definition = json_decode(File::get($definitionPath), true) ?: [];
+            $providers = Arr::wrap($definition['providers'] ?? []);
+
+            if (! empty($providers)) {
+                return $providers;
+            }
+        }
+
+        return [sprintf('Modules\\%s\\Providers\\%sServiceProvider', $moduleName, $moduleName)];
     }
 }
