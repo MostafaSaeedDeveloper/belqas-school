@@ -3,6 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SchoolClasses\ClassController as SchoolClassController;
+use App\Http\Controllers\Students\StudentController;
+use App\Http\Controllers\Subjects\SubjectController;
+use App\Http\Controllers\Teachers\TeacherController;
+use App\Http\Controllers\Users\UserController;
 
 // Authentication Routes
 Auth::routes();
@@ -18,40 +23,62 @@ Route::middleware(['auth'])->group(function () {
     // Main Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Students Routes
-    Route::prefix('students')->name('students.')->group(function () {
-        Route::get('/', function() { return view('students.index'); })->name('index')->middleware('can:view_students');
-        Route::get('/create', function() { return view('students.create'); })->name('create')->middleware('can:create_students');
-        Route::get('/{student}', function() { return view('students.show'); })->name('show')->middleware('can:view_students');
-        Route::get('/{student}/edit', function() { return view('students.edit'); })->name('edit')->middleware('can:edit_students');
-        Route::get('/reports', function() { return view('students.reports'); })->name('reports')->middleware('can:view_students');
-    });
-
-    // Teachers Routes
+    // Teachers Management
     Route::prefix('teachers')->name('teachers.')->group(function () {
-        Route::get('/', function() { return view('teachers.index'); })->name('index')->middleware('can:view_teachers');
-        Route::get('/create', function() { return view('teachers.create'); })->name('create')->middleware('can:create_teachers');
-        Route::get('/{teacher}', function() { return view('teachers.show'); })->name('show')->middleware('can:view_teachers');
-        Route::get('/{teacher}/edit', function() { return view('teachers.edit'); })->name('edit')->middleware('can:edit_teachers');
-        Route::get('/schedules', function() { return view('teachers.schedules'); })->name('schedules')->middleware('can:view_teachers');
+        Route::get('/', [TeacherController::class, 'index'])->name('index')->middleware('can:view_teachers');
+        Route::get('/create', [TeacherController::class, 'create'])->name('create')->middleware('can:create_teachers');
+        Route::post('/', [TeacherController::class, 'store'])->name('store')->middleware('can:create_teachers');
+        Route::get('/{teacher}', [TeacherController::class, 'show'])->name('show')->middleware('can:view_teachers');
+        Route::get('/{teacher}/edit', [TeacherController::class, 'edit'])->name('edit')->middleware('can:edit_teachers');
+        Route::put('/{teacher}', [TeacherController::class, 'update'])->name('update')->middleware('can:edit_teachers');
+        Route::delete('/{teacher}', [TeacherController::class, 'destroy'])->name('destroy')->middleware('can:delete_teachers');
     });
 
-    // Classes Routes
+    // Students Management
+    Route::prefix('students')->name('students.')->group(function () {
+        Route::get('/', [StudentController::class, 'index'])->name('index')->middleware('can:view_students');
+        Route::get('/create', [StudentController::class, 'create'])->name('create')->middleware('can:create_students');
+        Route::post('/', [StudentController::class, 'store'])->name('store')->middleware('can:create_students');
+        Route::get('/reports', [StudentController::class, 'reports'])->name('reports')->middleware('can:view_students');
+        Route::get('/{student}', [StudentController::class, 'show'])->name('show')->middleware('can:view_students');
+        Route::get('/{student}/edit', [StudentController::class, 'edit'])->name('edit')->middleware('can:edit_students');
+        Route::put('/{student}', [StudentController::class, 'update'])->name('update')->middleware('can:edit_students');
+        Route::delete('/{student}', [StudentController::class, 'destroy'])->name('destroy')->middleware('can:delete_students');
+    });
+
+    // Classes Management
     Route::prefix('classes')->name('classes.')->group(function () {
-        Route::get('/', function() { return view('classes.index'); })->name('index')->middleware('can:view_classes');
-        Route::get('/create', function() { return view('classes.create'); })->name('create')->middleware('can:create_classes');
-        Route::get('/{class}', function() { return view('classes.show'); })->name('show')->middleware('can:view_classes');
-        Route::get('/{class}/edit', function() { return view('classes.edit'); })->name('edit')->middleware('can:edit_classes');
-        Route::get('/timetables', function() { return view('classes.timetables'); })->name('timetables')->middleware('can:view_timetable');
+        Route::get('/', [SchoolClassController::class, 'index'])->name('index')->middleware('can:view_classes');
+        Route::get('/create', [SchoolClassController::class, 'create'])->name('create')->middleware('can:create_classes');
+        Route::post('/', [SchoolClassController::class, 'store'])->name('store')->middleware('can:create_classes');
+        Route::get('/{class}', [SchoolClassController::class, 'show'])->name('show')->middleware('can:view_classes');
+        Route::get('/{class}/edit', [SchoolClassController::class, 'edit'])->name('edit')->middleware('can:edit_classes');
+        Route::put('/{class}', [SchoolClassController::class, 'update'])->name('update')->middleware('can:edit_classes');
+        Route::delete('/{class}', [SchoolClassController::class, 'destroy'])->name('destroy')->middleware('can:delete_classes');
     });
 
-    // Subjects Routes
+    // Subjects Management
     Route::prefix('subjects')->name('subjects.')->group(function () {
-        Route::get('/', function() { return view('subjects.index'); })->name('index')->middleware('can:view_subjects');
-        Route::get('/create', function() { return view('subjects.create'); })->name('create')->middleware('can:create_subjects');
-        Route::get('/{subject}', function() { return view('subjects.show'); })->name('show')->middleware('can:view_subjects');
-        Route::get('/{subject}/edit', function() { return view('subjects.edit'); })->name('edit')->middleware('can:edit_subjects');
-        Route::get('/assignments', function() { return view('subjects.assignments'); })->name('assignments')->middleware('can:view_subjects');
+        Route::get('/', [SubjectController::class, 'index'])->name('index')->middleware('can:view_subjects');
+        Route::get('/create', [SubjectController::class, 'create'])->name('create')->middleware('can:create_subjects');
+        Route::post('/', [SubjectController::class, 'store'])->name('store')->middleware('can:create_subjects');
+        Route::get('/{subject}', [SubjectController::class, 'show'])->name('show')->middleware('can:view_subjects');
+        Route::get('/{subject}/edit', [SubjectController::class, 'edit'])->name('edit')->middleware('can:edit_subjects');
+        Route::put('/{subject}', [SubjectController::class, 'update'])->name('update')->middleware('can:edit_subjects');
+        Route::delete('/{subject}', [SubjectController::class, 'destroy'])->name('destroy')->middleware('can:delete_subjects');
+    });
+
+    // Users Management
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('index')->middleware('can:view_users');
+        Route::get('/create', [UserController::class, 'create'])->name('create')->middleware('can:create_users');
+        Route::post('/', [UserController::class, 'store'])->name('store')->middleware('can:create_users');
+        Route::get('/{user}', [UserController::class, 'show'])->name('show')->middleware('can:view_users');
+        Route::get('/{user}/edit', [UserController::class, 'edit'])->name('edit')->middleware('can:edit_users');
+        Route::put('/{user}', [UserController::class, 'update'])->name('update')->middleware('can:edit_users');
+        Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy')->middleware('can:delete_users');
+        Route::patch('/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('toggle-status')->middleware('can:edit_users');
+        Route::post('/{user}/reset-password', [UserController::class, 'resetPassword'])->name('reset-password')->middleware('can:edit_users');
     });
 
     // Attendance Routes
