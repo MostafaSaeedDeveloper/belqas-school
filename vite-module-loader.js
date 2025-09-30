@@ -3,46 +3,42 @@ import path from 'path';
 import { pathToFileURL } from 'url';
 
 async function collectModuleAssetsPaths(paths, modulesPath) {
-  modulesPath = path.join(__dirname, modulesPath);
-
+  const modulesDirectory = path.join(__dirname, modulesPath);
   const moduleStatusesPath = path.join(__dirname, 'modules_statuses.json');
 
   try {
-    // Read module_statuses.json
+    await fs.access(modulesDirectory);
+    await fs.access(moduleStatusesPath);
+  } catch {
+    return paths;
+  }
+
+  try {
     const moduleStatusesContent = await fs.readFile(moduleStatusesPath, 'utf-8');
     const moduleStatuses = JSON.parse(moduleStatusesContent);
-
-    // Read module directories
-    const moduleDirectories = await fs.readdir(modulesPath);
+    const moduleDirectories = await fs.readdir(modulesDirectory);
 
     for (const moduleDir of moduleDirectories) {
-      if (moduleDir === '.DS_Store') {
-        // Skip .DS_Store directory
+      if (moduleDir === '.DS_Store' || moduleStatuses[moduleDir] !== true) {
         continue;
       }
 
-      // Check if the module is enabled (status is true)
-      if (moduleStatuses[moduleDir] === true) {
-        const viteConfigPath = path.join(modulesPath, moduleDir, 'vite.config.js');
+      const viteConfigPath = path.join(modulesDirectory, moduleDir, 'vite.config.js');
 
-        try {
-          await fs.access(viteConfigPath);
-          // Convert to a file URL for Windows compatibility
-          const moduleConfigURL = pathToFileURL(viteConfigPath);
+      try {
+        await fs.access(viteConfigPath);
+        const moduleConfigURL = pathToFileURL(viteConfigPath);
+        const moduleConfig = await import(moduleConfigURL.href);
 
-          // Import the module-specific Vite configuration
-          const moduleConfig = await import(moduleConfigURL.href);
-
-          if (moduleConfig.paths && Array.isArray(moduleConfig.paths)) {
-            paths.push(...moduleConfig.paths);
-          }
-        } catch (error) {
-          // vite.config.js does not exist, skip this module
+        if (moduleConfig.paths && Array.isArray(moduleConfig.paths)) {
+          paths.push(...moduleConfig.paths);
         }
+      } catch {
+        // vite.config.js does not exist for this module, skip it gracefully
       }
     }
   } catch (error) {
-    console.error(`Error reading module statuses or module configurations: ${error}`);
+    console.error(`Error reading module configurations: ${error}`);
   }
 
   return paths;
