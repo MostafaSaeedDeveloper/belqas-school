@@ -3,6 +3,7 @@
 namespace Modules\Teachers\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Subject;
 use App\Models\TeacherProfile;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -46,6 +47,7 @@ class TeacherController extends Controller
     {
         return view('teachers::create', [
             'specializations' => $this->specializationOptions(),
+            'subjects' => Subject::orderBy('name')->get(),
         ]);
     }
 
@@ -71,6 +73,8 @@ class TeacherController extends Controller
 
         $teacher->teacherProfile()->create($this->profilePayload($data));
 
+        $teacher->teachingSubjects()->sync($request->input('subject_ids', []));
+
         return redirect()
             ->route('teachers.show', $teacher)
             ->with('success', 'تم إضافة المعلم بنجاح.');
@@ -81,7 +85,7 @@ class TeacherController extends Controller
      */
     public function show(User $teacher): View
     {
-        $teacher->load('teacherProfile');
+        $teacher->load(['teacherProfile', 'teachingSubjects.classrooms', 'teachingClassrooms']);
 
         return view('teachers::show', [
             'teacher' => $teacher,
@@ -93,11 +97,12 @@ class TeacherController extends Controller
      */
     public function edit(User $teacher): View
     {
-        $teacher->load('teacherProfile');
+        $teacher->load(['teacherProfile', 'teachingSubjects', 'teachingClassrooms']);
 
         return view('teachers::edit', [
             'teacher' => $teacher,
             'specializations' => $this->specializationOptions(),
+            'subjects' => Subject::orderBy('name')->get(),
         ]);
     }
 
@@ -126,6 +131,8 @@ class TeacherController extends Controller
 
         $teacher->update($payload);
         $teacher->teacherProfile()->updateOrCreate([], $this->profilePayload($data));
+
+        $teacher->teachingSubjects()->sync($request->input('subject_ids', []));
 
         return redirect()
             ->route('teachers.show', $teacher)
@@ -157,7 +164,7 @@ class TeacherController extends Controller
     public function schedules(): View
     {
         $teachers = User::role('teacher')
-            ->with('teacherProfile')
+            ->with(['teacherProfile', 'teachingSubjects', 'teachingClassrooms'])
             ->whereHas('teacherProfile')
             ->orderBy('name')
             ->get();
@@ -166,7 +173,10 @@ class TeacherController extends Controller
             ->map->count();
 
         $subjectsCloud = $teachers->flatMap(function (User $teacher) {
-            return collect($teacher->teacherProfile?->subjects ?? []);
+            $profileSubjects = collect($teacher->teacherProfile?->subjects ?? []);
+            $assignedSubjects = $teacher->teachingSubjects->pluck('name');
+
+            return $profileSubjects->merge($assignedSubjects);
         })->filter()->countBy()->sortDesc();
 
         return view('teachers::schedules', compact('teachers', 'bySpecialization', 'subjectsCloud'));
@@ -179,7 +189,7 @@ class TeacherController extends Controller
     {
         $query = User::query()
             ->role('teacher')
-            ->with('teacherProfile');
+            ->with(['teacherProfile', 'teachingSubjects', 'teachingClassrooms']);
 
         if (! empty($filters['search'])) {
             $query->where(function ($q) use ($filters) {
@@ -251,7 +261,22 @@ class TeacherController extends Controller
             'notes',
         ]);
 
-        $payload['subjects'] = $this->subjectsArray($data['subjects'] ?? null);
+        $manualSubjects = $this->subjectsArray($data['subjects'] ?? null);
+        $selectedSubjects = [];
+
+        if (! empty($data['subject_ids'])) {
+            $selectedSubjects = Subject::whereIn('id', (array) $data['subject_ids'])
+                ->pluck('name')
+                ->toArray();
+        }
+
+        $payload['subjects'] = collect($manualSubjects)
+            ->merge($selectedSubjects)
+            ->filter()
+            ->map(fn ($subject) => trim($subject))
+            ->unique()
+            ->values()
+            ->all();
 
         return $payload;
     }

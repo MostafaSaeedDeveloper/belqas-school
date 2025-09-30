@@ -3,6 +3,7 @@
 namespace Modules\Students\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Classroom;
 use App\Models\StudentProfile;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -34,7 +35,7 @@ class StudentController extends Controller
         ];
 
         $gradeOptions = $this->gradeOptions();
-        $classrooms = $this->classroomOptions();
+        $classrooms = $this->classroomsList();
 
         return view('students::index', compact('students', 'filters', 'stats', 'gradeOptions', 'classrooms'));
     }
@@ -46,7 +47,7 @@ class StudentController extends Controller
     {
         return view('students::create', [
             'gradeOptions' => $this->gradeOptions(),
-            'classrooms' => $this->classroomOptions(),
+            'classrooms' => $this->classroomsList(),
         ]);
     }
 
@@ -72,6 +73,8 @@ class StudentController extends Controller
 
         $student->studentProfile()->create($this->profilePayload($data));
 
+        $this->syncStudentClassroom($student, $data['classroom_id'] ?? null);
+
         return redirect()
             ->route('students.show', $student)
             ->with('success', 'تم تسجيل الطالب بنجاح.');
@@ -82,7 +85,7 @@ class StudentController extends Controller
      */
     public function show(User $student): View
     {
-        $student->load('studentProfile');
+        $student->load(['studentProfile', 'studentClassrooms']);
 
         return view('students::show', [
             'student' => $student,
@@ -94,12 +97,12 @@ class StudentController extends Controller
      */
     public function edit(User $student): View
     {
-        $student->load('studentProfile');
+        $student->load(['studentProfile', 'studentClassrooms']);
 
         return view('students::edit', [
             'student' => $student,
             'gradeOptions' => $this->gradeOptions(),
-            'classrooms' => $this->classroomOptions(),
+            'classrooms' => $this->classroomsList(),
         ]);
     }
 
@@ -128,6 +131,8 @@ class StudentController extends Controller
 
         $student->update($payload);
         $student->studentProfile()->updateOrCreate([], $this->profilePayload($data));
+
+        $this->syncStudentClassroom($student, $data['classroom_id'] ?? null);
 
         return redirect()
             ->route('students.show', $student)
@@ -243,7 +248,7 @@ class StudentController extends Controller
     {
         $query = User::query()
             ->role('student')
-            ->with('studentProfile');
+            ->with(['studentProfile', 'studentClassrooms']);
 
         if (! empty($filters['search'])) {
             $query->where(function ($q) use ($filters) {
@@ -265,9 +270,9 @@ class StudentController extends Controller
             });
         }
 
-        if (! empty($filters['classroom'])) {
-            $query->whereHas('studentProfile', function ($q) use ($filters) {
-                $q->where('classroom', $filters['classroom']);
+        if (! empty($filters['classroom_id'])) {
+            $query->whereHas('studentClassrooms', function ($q) use ($filters) {
+                $q->where('classroom_id', $filters['classroom_id']);
             });
         }
 
@@ -304,7 +309,7 @@ class StudentController extends Controller
         return [
             'search' => $request->input('search'),
             'grade_level' => $request->input('grade_level'),
-            'classroom' => $request->input('classroom'),
+            'classroom_id' => $request->input('classroom_id'),
             'gender' => $request->input('gender'),
             'status' => $status,
         ];
@@ -315,18 +320,31 @@ class StudentController extends Controller
      */
     protected function profilePayload(array $data): array
     {
-        return Arr::only($data, [
+        $payload = Arr::only($data, [
             'student_code',
             'gender',
             'date_of_birth',
             'grade_level',
-            'classroom',
             'enrollment_date',
             'guardian_name',
             'guardian_phone',
             'address',
             'notes',
         ]);
+
+        $payload['classroom'] = null;
+
+        if (! empty($data['classroom_id'])) {
+            $classroom = Classroom::find($data['classroom_id']);
+            if ($classroom) {
+                $payload['classroom'] = $classroom->name;
+                if (empty($payload['grade_level'])) {
+                    $payload['grade_level'] = $classroom->grade_level;
+                }
+            }
+        }
+
+        return $payload;
     }
 
     /**
@@ -382,10 +400,35 @@ class StudentController extends Controller
     }
 
     /**
-     * Available classroom options.
+     * Retrieve available classrooms ordered by grade and name.
      */
-    protected function classroomOptions(): array
+    protected function classroomsList()
     {
-        return ['A', 'B', 'C', 'D', 'E', 'F'];
+        return Classroom::orderBy('grade_level')
+            ->orderBy('name')
+            ->get();
+    }
+
+    /**
+     * Sync the student's classroom relation and profile details.
+     */
+    protected function syncStudentClassroom(User $student, ?int $classroomId): void
+    {
+        if ($classroomId) {
+            $classroom = Classroom::find($classroomId);
+
+            if ($classroom) {
+                $student->studentClassrooms()->sync([$classroom->id]);
+                $student->studentProfile?->update([
+                    'classroom' => $classroom->name,
+                    'grade_level' => $classroom->grade_level ?? $student->studentProfile?->grade_level,
+                ]);
+            }
+
+            return;
+        }
+
+        $student->studentClassrooms()->sync([]);
+        $student->studentProfile?->update(['classroom' => null]);
     }
 }

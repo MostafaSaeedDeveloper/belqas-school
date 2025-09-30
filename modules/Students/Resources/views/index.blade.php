@@ -79,11 +79,11 @@
             </div>
 
             <form method="GET" action="{{ route('students.index') }}" class="row g-3">
-                <div class="col-md-4">
+                <div class="col-lg-4 col-md-6">
                     <label class="form-label">بحث</label>
                     <input type="text" name="search" value="{{ $filters['search'] }}" class="form-control" placeholder="ابحث بالاسم أو البريد أو ولي الأمر">
                 </div>
-                <div class="col-md-3">
+                <div class="col-lg-2 col-md-3">
                     <label class="form-label">الصف الدراسي</label>
                     <select name="grade_level" class="form-select">
                         <option value="">الكل</option>
@@ -92,16 +92,21 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-lg-2 col-md-3">
                     <label class="form-label">الفصل</label>
-                    <select name="classroom" class="form-select">
+                    <select name="classroom_id" class="form-select">
                         <option value="">الكل</option>
                         @foreach($classrooms as $classroom)
-                            <option value="{{ $classroom }}" @selected($filters['classroom'] === $classroom)>{{ $classroom }}</option>
+                            <option value="{{ $classroom->id }}" @selected($filters['classroom_id'] == $classroom->id)>
+                                {{ $classroom->name }}
+                                @if($classroom->grade_level)
+                                    ({{ $classroom->grade_level }})
+                                @endif
+                            </option>
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-lg-2 col-md-3">
                     <label class="form-label">الجنس</label>
                     <select name="gender" class="form-select">
                         <option value="">الكل</option>
@@ -109,7 +114,7 @@
                         <option value="female" @selected($filters['gender'] === 'female')>أنثى</option>
                     </select>
                 </div>
-                <div class="col-md-1">
+                <div class="col-lg-2 col-md-3">
                     <label class="form-label">الحالة</label>
                     <select name="status" class="form-select">
                         <option value="">الكل</option>

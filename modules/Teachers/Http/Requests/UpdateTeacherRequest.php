@@ -39,6 +39,8 @@ class UpdateTeacherRequest extends FormRequest
             'phone_secondary' => ['nullable', 'string', 'max:30'],
             'address' => ['nullable', 'string', 'max:255'],
             'subjects' => ['nullable', 'string', 'max:255'],
+            'subject_ids' => ['nullable', 'array'],
+            'subject_ids.*' => ['integer', 'exists:subjects,id'],
             'office_hours' => ['nullable', 'string', 'max:120'],
             'notes' => ['nullable', 'string'],
         ];

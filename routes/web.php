@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SubjectController;
 
 // Authentication Routes
 Auth::routes();
@@ -19,22 +21,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Classes Routes
-    Route::prefix('classes')->name('classes.')->group(function () {
-        Route::get('/', function() { return view('classes.index'); })->name('index')->middleware('can:view_classes');
-        Route::get('/create', function() { return view('classes.create'); })->name('create')->middleware('can:create_classes');
-        Route::get('/{class}', function() { return view('classes.show'); })->name('show')->middleware('can:view_classes');
-        Route::get('/{class}/edit', function() { return view('classes.edit'); })->name('edit')->middleware('can:edit_classes');
-        Route::get('/timetables', function() { return view('classes.timetables'); })->name('timetables')->middleware('can:view_timetable');
-    });
+    Route::get('classes/timetables', [ClassroomController::class, 'timetables'])->name('classes.timetables');
+    Route::resource('classes', ClassroomController::class);
 
     // Subjects Routes
-    Route::prefix('subjects')->name('subjects.')->group(function () {
-        Route::get('/', function() { return view('subjects.index'); })->name('index')->middleware('can:view_subjects');
-        Route::get('/create', function() { return view('subjects.create'); })->name('create')->middleware('can:create_subjects');
-        Route::get('/{subject}', function() { return view('subjects.show'); })->name('show')->middleware('can:view_subjects');
-        Route::get('/{subject}/edit', function() { return view('subjects.edit'); })->name('edit')->middleware('can:edit_subjects');
-        Route::get('/assignments', function() { return view('subjects.assignments'); })->name('assignments')->middleware('can:view_subjects');
-    });
+    Route::get('subjects/assignments', [SubjectController::class, 'assignments'])->name('subjects.assignments');
+    Route::post('subjects/assignments', [SubjectController::class, 'storeAssignment'])->name('subjects.assignments.store');
+    Route::resource('subjects', SubjectController::class);
 
     // Attendance Routes
     Route::prefix('attendance')->name('attendance.')->group(function () {

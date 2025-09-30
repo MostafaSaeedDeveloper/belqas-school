@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -130,6 +131,33 @@ class User extends Authenticatable
     public function teacherProfile(): HasOne
     {
         return $this->hasOne(TeacherProfile::class);
+    }
+
+    /**
+     * Classrooms where the user is enrolled as a student.
+     */
+    public function studentClassrooms(): BelongsToMany
+    {
+        return $this->belongsToMany(Classroom::class, 'classroom_student', 'student_id', 'classroom_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * Classrooms where the user teaches.
+     */
+    public function teachingClassrooms(): BelongsToMany
+    {
+        return $this->belongsToMany(Classroom::class, 'classroom_teacher', 'teacher_id', 'classroom_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * Subjects taught by the user.
+     */
+    public function teachingSubjects(): BelongsToMany
+    {
+        return $this->belongsToMany(Subject::class, 'subject_teacher', 'teacher_id', 'subject_id')
+            ->withTimestamps();
     }
 
     /**

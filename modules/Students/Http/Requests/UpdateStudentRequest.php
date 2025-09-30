@@ -34,7 +34,7 @@ class UpdateStudentRequest extends FormRequest
             'gender' => ['nullable', 'in:male,female'],
             'date_of_birth' => ['nullable', 'date', 'before:today'],
             'grade_level' => ['nullable', 'string', 'max:120'],
-            'classroom' => ['nullable', 'string', 'max:50'],
+            'classroom_id' => ['nullable', 'integer', 'exists:classrooms,id'],
             'enrollment_date' => ['nullable', 'date'],
             'guardian_name' => ['nullable', 'string', 'max:255'],
             'guardian_phone' => ['nullable', 'string', 'max:30'],

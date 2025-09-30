@@ -50,10 +50,15 @@
     </div>
     <div class="col-md-3">
         <label class="form-label">الفصل</label>
-        <select name="classroom" class="form-select">
+        <select name="classroom_id" class="form-select">
             <option value="">اختر الفصل</option>
             @foreach($classrooms as $classroom)
-                <option value="{{ $classroom }}" @selected(old('classroom', optional($student->studentProfile ?? null)->classroom) === $classroom)>{{ $classroom }}</option>
+                <option value="{{ $classroom->id }}" @selected(old('classroom_id', $editing ? optional($student->studentClassrooms->first())->id : null) == $classroom->id)>
+                    {{ $classroom->name }}
+                    @if($classroom->grade_level)
+                        ({{ $classroom->grade_level }})
+                    @endif
+                </option>
             @endforeach
         </select>
     </div>

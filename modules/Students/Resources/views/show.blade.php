@@ -59,7 +59,13 @@
                         </div>
                         <div class="col-md-4">
                             <label class="text-muted">الفصل</label>
-                            <div class="fw-semibold">{{ $student->studentProfile?->classroom ?? '—' }}</div>
+                            <div class="fw-semibold">
+                                @if($student->studentClassrooms->isNotEmpty())
+                                    {{ $student->studentClassrooms->pluck('name')->implode('، ') }}
+                                @else
+                                    {{ $student->studentProfile?->classroom ?? '—' }}
+                                @endif
+                            </div>
                         </div>
                         <div class="col-md-4">
                             <label class="text-muted">تاريخ الالتحاق</label>
