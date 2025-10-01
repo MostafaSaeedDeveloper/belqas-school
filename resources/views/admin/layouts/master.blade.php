@@ -30,70 +30,84 @@
     <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet">
 </head>
 <body class="@yield('body-class', 'sidebar-mini')">
-    <!-- Loading Screen -->
-    <div id="loading-screen">
-        <div class="loading-spinner">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">جاري التحميل...</span>
-            </div>
-            <div class="loading-text">جاري التحميل...</div>
+    <div class="app-shell">
+        <div class="app-background">
+            <span class="background-shape shape-one"></span>
+            <span class="background-shape shape-two"></span>
+            <span class="background-shape shape-three"></span>
         </div>
-    </div>
 
-    <!-- Main Wrapper -->
-    <div class="main-wrapper">
-        <!-- Sidebar -->
-        @include('admin.layouts.partials.sidebar')
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="loading-screen">
+            <div class="loading-spinner">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">جاري التحميل...</span>
+                </div>
+                <div class="loading-text">جاري التحميل...</div>
+            </div>
+        </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Top Navigation -->
-            @include('admin.layouts.partials.topbar')
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Sidebar -->
+            @include('admin.layouts.partials.sidebar')
 
-            <!-- Page Content -->
-            <div class="page-content">
-                <!-- Page Header -->
-                @hasSection('page-header')
-                    <div class="page-header">
-                        <div class="container-fluid">
-                            <div class="row align-items-center">
-                                <div class="col-md-6">
-                                    <h1 class="page-title">@yield('page-title')</h1>
-                                    @hasSection('page-subtitle')
-                                        <p class="page-subtitle">@yield('page-subtitle')</p>
-                                    @endif
+            <!-- Main Content -->
+            <div class="main-content">
+                <div class="main-content-inner">
+                    <!-- Top Navigation -->
+                    @include('admin.layouts.partials.topbar')
+
+                    <!-- Page Content -->
+                    <div class="page-content">
+                        <!-- Page Header -->
+                        @hasSection('page-header')
+                            <div class="page-header">
+                                <div class="page-header-content">
+                                    <div class="page-header-text">
+                                        <h1 class="page-title">@yield('page-title')</h1>
+                                        @hasSection('page-subtitle')
+                                            <p class="page-subtitle">@yield('page-subtitle')</p>
+                                        @endif
+                                    </div>
+                                    <div class="page-header-meta">
+                                        <span class="page-date">
+                                            <i class="fas fa-clock"></i>
+                                            {{ \Carbon\Carbon::now()->translatedFormat('l، j F Y') }}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <nav aria-label="breadcrumb">
-                                        <ol class="breadcrumb">
-                                            <li class="breadcrumb-item">
-                                                <a href="{{ route('dashboard') }}">
-                                                    <i class="fas fa-home"></i> الرئيسية
-                                                </a>
-                                            </li>
-                                            @yield('breadcrumb')
-                                        </ol>
-                                    </nav>
-                                </div>
+
+                                <nav aria-label="breadcrumb" class="page-breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item">
+                                            <a href="{{ route('dashboard') }}">
+                                                <i class="fas fa-home"></i>
+                                                الرئيسية
+                                            </a>
+                                        </li>
+                                        @yield('breadcrumb')
+                                    </ol>
+                                </nav>
+                            </div>
+                        @endif
+
+                        <!-- Main Content Area -->
+                        <div class="content-area">
+                            <div class="content-area-inner">
+                                <!-- Flash Messages -->
+                                @include('admin.layouts.partials.alerts')
+
+                                <!-- Page Content -->
+                                @yield('content')
                             </div>
                         </div>
                     </div>
-                @endif
 
-                <!-- Main Content Area -->
-                <div class="content-area">
-                    <div class="container-fluid">
-                        <!-- Flash Messages -->
-                        @include('admin.layouts.partials.alerts')
-
-                        <!-- Page Content -->
-                        @yield('content')
-                    </div>
+                    <!-- Footer -->
+                    @include('admin.layouts.partials.footer')
                 </div>
             </div>
-
-            <!-- Footer -->
-            @include('admin.layouts.partials.footer')
         </div>
     </div>
 
