@@ -29,7 +29,7 @@
     <!-- Custom CSS -->
     <link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet">
 </head>
-<body class="@yield('body-class', 'sidebar-mini')">
+<body class="@yield('body-class', 'app-modern-dashboard')">
     <!-- Loading Screen -->
     <div id="loading-screen">
         <div class="loading-spinner">
@@ -40,55 +40,50 @@
         </div>
     </div>
 
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
     <!-- Main Wrapper -->
-    <div class="main-wrapper">
+    <div class="app-shell">
         <!-- Sidebar -->
         @include('admin.layouts.partials.sidebar')
 
         <!-- Main Content -->
-        <div class="main-content">
+        <div class="app-main main-content">
             <!-- Top Navigation -->
             @include('admin.layouts.partials.topbar')
 
             <!-- Page Content -->
-            <div class="page-content">
-                <!-- Page Header -->
+            <div class="page-wrapper">
                 @hasSection('page-header')
                     <div class="page-header">
-                        <div class="container-fluid">
-                            <div class="row align-items-center">
-                                <div class="col-md-6">
-                                    <h1 class="page-title">@yield('page-title')</h1>
-                                    @hasSection('page-subtitle')
-                                        <p class="page-subtitle">@yield('page-subtitle')</p>
-                                    @endif
-                                </div>
-                                <div class="col-md-6">
-                                    <nav aria-label="breadcrumb">
-                                        <ol class="breadcrumb">
-                                            <li class="breadcrumb-item">
-                                                <a href="{{ route('dashboard') }}">
-                                                    <i class="fas fa-home"></i> الرئيسية
-                                                </a>
-                                            </li>
-                                            @yield('breadcrumb')
-                                        </ol>
-                                    </nav>
-                                </div>
+                        <div class="page-header-content">
+                            <div class="page-header-info">
+                                <h1 class="page-title">@yield('page-title')</h1>
+                                @hasSection('page-subtitle')
+                                    <p class="page-subtitle">@yield('page-subtitle')</p>
+                                @endif
                             </div>
+                            <nav aria-label="breadcrumb" class="page-breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ route('dashboard') }}">
+                                            <i class="fas fa-home"></i> الرئيسية
+                                        </a>
+                                    </li>
+                                    @yield('breadcrumb')
+                                </ol>
+                            </nav>
                         </div>
                     </div>
                 @endif
 
                 <!-- Main Content Area -->
                 <div class="content-area">
-                    <div class="container-fluid">
-                        <!-- Flash Messages -->
-                        @include('admin.layouts.partials.alerts')
+                    <!-- Flash Messages -->
+                    @include('admin.layouts.partials.alerts')
 
-                        <!-- Page Content -->
-                        @yield('content')
-                    </div>
+                    <!-- Page Content -->
+                    @yield('content')
                 </div>
             </div>
 

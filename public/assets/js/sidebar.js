@@ -7,6 +7,7 @@ class SidebarManager {
     constructor() {
         this.sidebar = document.getElementById('sidebar');
         this.sidebarToggle = document.getElementById('sidebarToggle');
+        this.sidebarToggleMobile = document.getElementById('sidebarToggleMobile');
         this.sidebarOverlay = document.getElementById('sidebarOverlay');
         this.mainContent = document.querySelector('.main-content');
         
@@ -25,13 +26,15 @@ class SidebarManager {
     }
 
     setupEventListeners() {
-        // Toggle button
-        if (this.sidebarToggle) {
-            this.sidebarToggle.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.toggle();
-            });
-        }
+        // Toggle button (desktop + mobile trigger)
+        [this.sidebarToggle, this.sidebarToggleMobile].forEach(button => {
+            if (button) {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.toggle();
+                });
+            }
+        });
 
         // Overlay click (mobile)
         if (this.sidebarOverlay) {
