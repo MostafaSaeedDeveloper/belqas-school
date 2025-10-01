@@ -44,7 +44,7 @@
 
                     <div class="d-grid gap-2 mt-4">
                         @can('edit_classes')
-                            <a href="{{ route('classes.edit', $classroom) }}" class="btn btn-outline-primary">
+                            <a href="{{ route('classes.edit', ['class' => $classroom->id]) }}" class="btn btn-outline-primary">
                                 <i class="fas fa-edit"></i> تعديل بيانات الفصل
                             </a>
                         @endcan

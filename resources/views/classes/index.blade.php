@@ -95,7 +95,7 @@
                                 <td>
                                     <div class="fw-semibold">
                                         @can('view_classes')
-                                            <a href="{{ route('classes.show', $classroom) }}" class="resource-link">{{ $classroom->name }}</a>
+                                            <a href="{{ route('classes.show', ['class' => $classroom->id]) }}" class="resource-link">{{ $classroom->name }}</a>
                                         @else
                                             {{ $classroom->name }}
                                         @endcan
@@ -128,17 +128,17 @@
                                 <td class="text-center">
                                     <div class="btn-group" role="group">
                                         @can('view_classes')
-                                            <a href="{{ route('classes.show', $classroom) }}" class="btn btn-sm btn-outline-primary" title="عرض">
+                                            <a href="{{ route('classes.show', ['class' => $classroom->id]) }}" class="btn btn-sm btn-outline-primary" title="عرض">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                         @endcan
                                         @can('edit_classes')
-                                            <a href="{{ route('classes.edit', $classroom) }}" class="btn btn-sm btn-outline-secondary" title="تعديل">
+                                            <a href="{{ route('classes.edit', ['class' => $classroom->id]) }}" class="btn btn-sm btn-outline-secondary" title="تعديل">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                         @endcan
                                         @can('delete_classes')
-                                            <form action="{{ route('classes.destroy', $classroom) }}" method="POST" onsubmit="return confirm('هل تريد حذف هذا الفصل؟');">
+                                            <form action="{{ route('classes.destroy', ['class' => $classroom->id]) }}" method="POST" onsubmit="return confirm('هل تريد حذف هذا الفصل؟');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-outline-danger" title="حذف">
