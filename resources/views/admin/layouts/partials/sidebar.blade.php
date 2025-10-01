@@ -1,3 +1,11 @@
+@php
+    $user = auth()->user();
+    $userName = $user?->name ?? 'مستخدم النظام';
+    $userRole = $user ? ($user->getRoleNames()->first() ?? 'مستخدم') : 'مستخدم';
+    $userInitials = $user ? strtoupper(mb_substr($user->name, 0, 2)) : '??';
+    $userAvatar = $user?->avatar;
+@endphp
+
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-inner">
         <div class="sidebar-top">
@@ -13,26 +21,28 @@
 
         <div class="sidebar-user-card">
             <div class="user-avatar">
-                @if(auth()->user()->avatar)
-                    <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="{{ auth()->user()->name }}">
+                @if($userAvatar)
+                    <img src="{{ asset('storage/' . $userAvatar) }}" alt="{{ $userName }}">
                 @else
                     <div class="avatar-placeholder">
-                        {{ strtoupper(mb_substr(auth()->user()->name, 0, 2)) }}
+                        {{ $userInitials }}
                     </div>
                 @endif
             </div>
             <div class="user-details">
-                <h4 class="user-name">{{ auth()->user()->name }}</h4>
-                <p class="user-role">{{ auth()->user()->getRoleNames()->first() ?? 'مستخدم' }}</p>
+                <h4 class="user-name">{{ $userName }}</h4>
+                <p class="user-role">{{ $userRole }}</p>
                 <span class="user-status">
                     <span class="status-dot"></span>
                     متصل الآن
                 </span>
             </div>
-            <div class="user-actions">
-                <a href="{{ route('profile.show') }}" class="user-action">الملف الشخصي</a>
-                <a href="{{ route('settings.general') }}" class="user-action">الإعدادات</a>
-            </div>
+            @if($user)
+                <div class="user-actions">
+                    <a href="{{ route('profile.show') }}" class="user-action">الملف الشخصي</a>
+                    <a href="{{ route('settings.general') }}" class="user-action">الإعدادات</a>
+                </div>
+            @endif
         </div>
 
         <div class="sidebar-quick-links">

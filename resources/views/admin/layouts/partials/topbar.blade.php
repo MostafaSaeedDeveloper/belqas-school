@@ -1,3 +1,11 @@
+@php
+    $user = auth()->user();
+    $userName = $user?->name ?? 'مستخدم النظام';
+    $userRole = $user ? ($user->getRoleNames()->first() ?? 'مستخدم') : 'مستخدم';
+    $userInitials = $user ? strtoupper(mb_substr($user->name, 0, 2)) : '??';
+    $userAvatar = $user?->avatar;
+@endphp
+
 <div class="app-topbar">
     <div class="topbar-primary">
         <div class="topbar-branding">
@@ -8,7 +16,7 @@
             </button>
             <div class="topbar-greeting">
                 <span class="topbar-eyebrow">لوحة تحكم الإدارة</span>
-                <h1 class="topbar-title">مرحباً، {{ auth()->user()->name }}</h1>
+                <h1 class="topbar-title">مرحباً، {{ $userName }}</h1>
                 <p class="topbar-meta">{{ \Carbon\Carbon::now()->translatedFormat('l، j F Y') }}</p>
             </div>
         </div>
@@ -62,17 +70,17 @@
 
         <div class="topbar-user">
             <div class="user-avatar">
-                @if(auth()->user()->avatar)
-                    <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="{{ auth()->user()->name }}">
+                @if($userAvatar)
+                    <img src="{{ asset('storage/' . $userAvatar) }}" alt="{{ $userName }}">
                 @else
                     <div class="user-avatar-placeholder">
-                        {{ strtoupper(mb_substr(auth()->user()->name, 0, 2)) }}
+                        {{ $userInitials }}
                     </div>
                 @endif
             </div>
             <div class="user-overview">
-                <span class="user-name">{{ auth()->user()->name }}</span>
-                <span class="user-role">{{ auth()->user()->getRoleNames()->first() ?? 'مستخدم' }}</span>
+                <span class="user-name">{{ $userName }}</span>
+                <span class="user-role">{{ $userRole }}</span>
             </div>
             <button class="user-menu-trigger" type="button" title="خيارات الحساب">
                 <i class="fas fa-chevron-down"></i>
