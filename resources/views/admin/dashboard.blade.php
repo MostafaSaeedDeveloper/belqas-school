@@ -15,7 +15,7 @@
 <div class="dashboard-hero">
     <div class="hero-content">
         <div class="hero-label">لوحة المتابعة اللحظية</div>
-        <h2 class="hero-title">مرحباً بك في لوحة القيادة الذكية</h2>
+        <h2 class="hero-title">مرحباً بك في لوحة التحكم</h2>
         <p class="hero-subtitle">تتبع المؤشرات الأساسية، أدر العمليات اليومية، واطلع على كل ما يحدث في المدرسة من مكان واحد.</p>
 
         <div class="hero-insights">
