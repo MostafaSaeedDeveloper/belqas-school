@@ -118,6 +118,175 @@
     margin-top: 4px;
 }
 
+/* Header dropdowns */
+.header-actions .dropdown,
+.header-profile .dropdown {
+    position: relative;
+}
+
+.dropdown-panel {
+    position: absolute;
+    top: calc(100% + 12px);
+    inset-inline-end: 0;
+    min-width: 260px;
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+    padding: 1rem 1.25rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 1100;
+}
+
+.dropdown-panel.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.dropdown-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.dropdown-subtitle {
+    display: block;
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+}
+
+.dropdown-action {
+    font-size: 0.8rem;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.dropdown-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.dropdown-link {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.65rem 0;
+    color: #0f172a;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.dropdown-link i {
+    color: #2563eb;
+}
+
+.dropdown-link:hover,
+.dropdown-link:focus {
+    color: #2563eb;
+}
+
+.dropdown-link.text-danger {
+    color: #dc2626;
+}
+
+.dropdown-link.text-danger i {
+    color: currentColor;
+}
+
+.dropdown hr {
+    margin: 0.5rem 0;
+    border-color: rgba(15, 23, 42, 0.08);
+}
+
+.notifications-panel {
+    width: min(340px, 80vw);
+    max-height: 360px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+.notification-item {
+    display: flex;
+    gap: 0.85rem;
+    text-decoration: none;
+    color: inherit;
+    padding: 0.65rem;
+    border-radius: 14px;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.notification-item:hover,
+.notification-item:focus {
+    background: rgba(37, 99, 235, 0.08);
+    transform: translateX(-3px);
+}
+
+.notification-item.is-unread {
+    background: rgba(37, 99, 235, 0.12);
+    box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.25);
+}
+
+.notification-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    background: rgba(37, 99, 235, 0.12);
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.notification-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.notification-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #0f172a;
+}
+
+.notification-text {
+    font-size: 0.85rem;
+    color: #475569;
+    line-height: 1.5;
+}
+
+.notification-time {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 1.5rem 0.5rem;
+    color: #64748b;
+}
+
+.empty-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: #94a3b8;
+}
+
 /* Grade/Score styling */
 .grade-display {
     display: inline-flex;
