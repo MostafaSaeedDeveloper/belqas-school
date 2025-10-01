@@ -498,3 +498,29 @@ button:focus,
         scroll-behavior: auto !important;
     }
 }
+/* Placeholder pages styling */
+.placeholder-card {
+    border: 1px solid rgba(44, 90, 160, 0.08);
+    border-radius: var(--border-radius-xl, 1rem);
+    background: linear-gradient(145deg, rgba(44, 90, 160, 0.03), #ffffff);
+}
+
+.placeholder-card .placeholder-icon i {
+    color: var(--school-primary, #2c5aa0);
+}
+
+.placeholder-card .btn {
+    min-width: 180px;
+    border-radius: var(--border-radius-lg, 0.75rem);
+}
+
+.placeholder-tips .list-group-item {
+    background-color: transparent;
+    border: none;
+    padding-inline-start: 0;
+    padding-inline-end: 0;
+}
+
+.placeholder-tips .list-group-item + .list-group-item {
+    border-top: 1px dashed rgba(0, 0, 0, 0.08);
+}
