@@ -93,7 +93,13 @@
                         @forelse($classrooms as $classroom)
                             <tr>
                                 <td>
-                                    <div class="fw-semibold">{{ $classroom->name }}</div>
+                                    <div class="fw-semibold">
+                                        @can('view_classes')
+                                            <a href="{{ route('classes.show', ['class' => $classroom->id]) }}" class="resource-link">{{ $classroom->name }}</a>
+                                        @else
+                                            {{ $classroom->name }}
+                                        @endcan
+                                    </div>
                                     @if($classroom->section)
                                         <div class="text-muted small">الشعبة: {{ $classroom->section }}</div>
                                     @endif
@@ -122,7 +128,7 @@
                                 <td class="text-center">
                                     <div class="btn-group" role="group">
                                         @can('view_classes')
-                                            <a href="{{ route('classes.show', $classroom) }}" class="btn btn-sm btn-outline-primary" title="عرض">
+                                            <a href="{{ route('classes.show', ['class' => $classroom->id]) }}" class="btn btn-sm btn-outline-primary" title="عرض">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                         @endcan
@@ -132,7 +138,7 @@
                                             </a>
                                         @endcan
                                         @can('delete_classes')
-                                            <form action="{{ route('classes.destroy', $classroom) }}" method="POST" onsubmit="return confirm('هل تريد حذف هذا الفصل؟');">
+                                            <form action="{{ route('classes.destroy', ['class' => $classroom->id]) }}" method="POST" onsubmit="return confirm('هل تريد حذف هذا الفصل؟');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-outline-danger" title="حذف">
