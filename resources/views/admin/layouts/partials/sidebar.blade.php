@@ -166,7 +166,7 @@
                     </a>
                     <ul class="nav-submenu">
                         <li><a href="{{ route('reports.index') }}" class="nav-link {{ request()->routeIs('reports.index') ? 'active' : '' }}"><i class="far fa-circle"></i> التقارير العامة</a></li>
-                        <li><a href="{{ route('reports.performance') }}" class="nav-link {{ request()->routeIs('reports.performance') ? 'active' : '' }}"><i class="far fa-circle"></i> مؤشرات الأداء</a></li>
+                        <li><a href="{{ route('reports.academic') }}" class="nav-link {{ request()->routeIs('reports.academic') ? 'active' : '' }}"><i class="far fa-circle"></i> التحليلات الأكاديمية</a></li>
                         <li><a href="{{ route('reports.attendance') }}" class="nav-link {{ request()->routeIs('reports.attendance') ? 'active' : '' }}"><i class="far fa-circle"></i> تقارير الحضور</a></li>
                     </ul>
                 </li>
