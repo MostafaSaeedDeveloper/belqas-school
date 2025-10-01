@@ -133,7 +133,7 @@
                                             </a>
                                         @endcan
                                         @can('edit_classes')
-                                            <a href="{{ route('classes.edit', ['class' => $classroom->id]) }}" class="btn btn-sm btn-outline-secondary" title="تعديل">
+                                            <a href="{{ route('classes.edit', $classroom) }}" class="btn btn-sm btn-outline-secondary" title="تعديل">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                         @endcan
