@@ -6,12 +6,12 @@
   position: fixed;
   top: 0;
   right: 0;
-  width: 280px;
+  width: var(--sidebar-width);
   height: 100vh;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(15px);
-  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
-  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  background: #ffffff;
+  backdrop-filter: blur(10px);
+  box-shadow: -12px 0 24px rgba(15, 23, 42, 0.05);
+  border-left: 1px solid rgba(148, 163, 184, 0.25);
   transition: all 0.3s ease;
   z-index: var(--z-fixed);
   overflow-y: auto;
@@ -19,7 +19,7 @@
 }
 
 .sidebar.sidebar-collapsed {
-  width: 80px;
+  width: var(--sidebar-collapsed-width);
 }
 
 .sidebar::-webkit-scrollbar {
@@ -42,10 +42,10 @@
 /* Toggle Button */
 .sidebar-toggle {
   position: absolute;
-  top: 25px;
-  left: -20px;
-  width: 40px;
-  height: 40px;
+  top: 24px;
+  left: -18px;
+  width: 36px;
+  height: 36px;
   background: var(--gradient-primary);
   border: none;
   border-radius: var(--border-radius-full);
@@ -54,7 +54,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 12px 20px rgba(79, 70, 229, 0.25);
   transition: var(--transition-normal);
   z-index: 10;
 }
@@ -75,9 +75,9 @@
 
 /* Sidebar Header */
 .sidebar-header {
-  padding: var(--spacing-xl) var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-md);
   text-align: center;
-  background: var(--gradient-primary);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(76, 201, 240, 0.85));
   color: var(--white);
   position: relative;
   overflow: hidden;
@@ -139,7 +139,7 @@
 }
 
 .brand-title {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: 700;
   margin: 0;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -154,12 +154,12 @@
 
 /* User Info */
 .sidebar-user-info {
-  padding: var(--spacing-lg);
+  padding: var(--spacing-md) var(--spacing-lg);
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
-  background: rgba(102, 126, 234, 0.05);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  background: rgba(241, 245, 249, 0.55);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
   transition: var(--transition-normal);
 }
 
@@ -234,7 +234,7 @@
 
 /* Navigation Menu */
 .sidebar-nav {
-  padding: var(--spacing-lg) 0;
+  padding: var(--spacing-md) 0 var(--spacing-lg);
   flex: 1;
 }
 
@@ -245,17 +245,17 @@
 }
 
 .nav-item {
-  margin: var(--spacing-xs) var(--spacing-md);
+  margin: calc(var(--spacing-xs) / 2) var(--spacing-md);
   position: relative;
 }
 
 .nav-link {
   display: flex;
   align-items: center;
-  padding: var(--spacing-md) var(--spacing-lg);
+  padding: 0.75rem var(--spacing-lg);
   color: var(--dark-color);
   text-decoration: none;
-  border-radius: var(--border-radius-lg);
+  border-radius: 14px;
   transition: var(--transition-normal);
   position: relative;
   overflow: hidden;
@@ -270,7 +270,8 @@
   width: 0;
   height: 100%;
   background: var(--gradient-primary);
-  transition: width 0.3s ease;
+  opacity: 0.9;
+  transition: width 0.25s ease;
   z-index: -1;
 }
 
@@ -282,22 +283,22 @@
 .nav-link:hover,
 .nav-link.active {
   color: var(--white);
-  transform: translateX(-5px);
+  transform: translateX(-3px);
 }
 
 .nav-icon {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 
 .nav-text {
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 0.88rem;
+  font-weight: 600;
   white-space: nowrap;
   transition: var(--transition-normal);
 }
@@ -435,11 +436,11 @@
 /* Responsive Design */
 @media (max-width: 1200px) {
   .sidebar {
-    width: 260px;
+    width: var(--sidebar-width);
   }
   
   .sidebar.sidebar-collapsed {
-    width: 70px;
+    width: calc(var(--sidebar-collapsed-width) - 8px);
   }
 }
 
@@ -455,7 +456,7 @@
   }
   
   .sidebar.sidebar-collapsed {
-    width: 280px;
+    width: var(--sidebar-width);
     transform: translateX(100%);
   }
   
@@ -471,7 +472,7 @@
 @media (max-width: 768px) {
   .sidebar {
     width: 100%;
-    max-width: 300px;
+    max-width: 260px;
   }
   
   .sidebar-header {
@@ -502,7 +503,7 @@
 @media (max-width: 576px) {
   .sidebar {
     width: 100%;
-    max-width: 280px;
+    max-width: 240px;
   }
   
   .sidebar-header {
