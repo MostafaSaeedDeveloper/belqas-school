@@ -80,7 +80,13 @@
                         @forelse($subjects as $subject)
                             <tr>
                                 <td>
-                                    <div class="fw-semibold">{{ $subject->name }}</div>
+                                    <div class="fw-semibold">
+                                        @can('view_subjects')
+                                            <a href="{{ route('subjects.show', $subject) }}" class="resource-link">{{ $subject->name }}</a>
+                                        @else
+                                            {{ $subject->name }}
+                                        @endcan
+                                    </div>
                                     <div class="text-muted small">{{ $subject->code ?? 'بدون كود' }}</div>
                                 </td>
                                 <td>{{ $subject->grade_level ?? 'غير محدد' }}</td>

@@ -93,7 +93,13 @@
                         @forelse($classrooms as $classroom)
                             <tr>
                                 <td>
-                                    <div class="fw-semibold">{{ $classroom->name }}</div>
+                                    <div class="fw-semibold">
+                                        @can('view_classes')
+                                            <a href="{{ route('classes.show', $classroom) }}" class="resource-link">{{ $classroom->name }}</a>
+                                        @else
+                                            {{ $classroom->name }}
+                                        @endcan
+                                    </div>
                                     @if($classroom->section)
                                         <div class="text-muted small">الشعبة: {{ $classroom->section }}</div>
                                     @endif
