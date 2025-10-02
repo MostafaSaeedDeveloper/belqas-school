@@ -26,10 +26,25 @@ class ModuleServiceProvider extends ServiceProvider
                 continue;
             }
 
-            $serviceProvider = sprintf('Modules\\%s\\Providers\\%sServiceProvider', $moduleName, $moduleName);
+            $moduleDefinitionPath = $moduleDirectory . DIRECTORY_SEPARATOR . 'module.json';
 
-            if (class_exists($serviceProvider)) {
-                $this->app->register($serviceProvider);
+            if (! File::exists($moduleDefinitionPath)) {
+                continue;
+            }
+
+            $moduleDefinition = json_decode(File::get($moduleDefinitionPath), true) ?: [];
+            $providers = $moduleDefinition['providers'] ?? [];
+
+            if (! is_array($providers)) {
+                continue;
+            }
+
+            foreach ($providers as $provider) {
+                if (! is_string($provider) || ! class_exists($provider)) {
+                    continue;
+                }
+
+                $this->app->register($provider);
             }
         }
     }
