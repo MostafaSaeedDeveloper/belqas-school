@@ -22,7 +22,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Classes Routes
     Route::get('classes/timetables', [ClassroomController::class, 'timetables'])->name('classes.timetables');
-    Route::resource('classes', ClassroomController::class);
+    Route::resource('classes', ClassroomController::class)->parameters([
+        'classes' => 'classroom',
+    ]);
 
     // Subjects Routes
     Route::get('subjects/assignments', [SubjectController::class, 'assignments'])->name('subjects.assignments');

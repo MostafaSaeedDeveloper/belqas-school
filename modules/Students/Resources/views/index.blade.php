@@ -157,7 +157,13 @@
                                     <div class="d-flex align-items-center gap-3">
                                         <img src="{{ $student->avatar_url }}" alt="{{ $student->name }}" class="rounded-circle" width="42" height="42">
                                         <div>
-                                            <div class="fw-semibold">{{ $student->name }}</div>
+                                            <div class="fw-semibold">
+                                                @can('view_students')
+                                                    <a href="{{ route('students.show', $student) }}" class="resource-link">{{ $student->name }}</a>
+                                                @else
+                                                    {{ $student->name }}
+                                                @endcan
+                                            </div>
                                             <small class="text-muted" dir="ltr">{{ $student->username }}</small>
                                         </div>
                                     </div>

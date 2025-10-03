@@ -4,7 +4,7 @@
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <p class="footer-text">
-                        © {{ date('Y') }} مدرسة بلقاس - جميع الحقوق محفوظة
+                        © {{ date('Y') }} مدرسة بلقاس - المنصه هى مساهمه مجانيه من ولي أمر الطلاب (مازن و آسر ) محمد السيد على
                     </p>
                 </div>
                 <div class="col-md-6 text-end">

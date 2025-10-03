@@ -95,7 +95,7 @@
                                 <td>
                                     <div class="fw-semibold">
                                         @can('view_classes')
-                                            <a href="{{ route('classes.show', ['class' => $classroom->id]) }}" class="resource-link">{{ $classroom->name }}</a>
+                                            <a href="{{ route('classes.show', $classroom) }}" class="resource-link">{{ $classroom->name }}</a>
                                         @else
                                             {{ $classroom->name }}
                                         @endcan
@@ -110,7 +110,13 @@
                                 <td>{{ $classroom->grade_level }}</td>
                                 <td>
                                     @if($classroom->homeroomTeacher)
-                                        <div class="fw-semibold">{{ $classroom->homeroomTeacher->name }}</div>
+                                        <div class="fw-semibold">
+                                            @can('view_teachers')
+                                                <a href="{{ route('teachers.show', $classroom->homeroomTeacher) }}" class="resource-link">{{ $classroom->homeroomTeacher->name }}</a>
+                                            @else
+                                                {{ $classroom->homeroomTeacher->name }}
+                                            @endcan
+                                        </div>
                                         <div class="text-muted small" dir="ltr">{{ $classroom->homeroomTeacher->email ?? $classroom->homeroomTeacher->username }}</div>
                                     @else
                                         <span class="text-muted">غير محدد</span>
@@ -128,7 +134,7 @@
                                 <td class="text-center">
                                     <div class="btn-group" role="group">
                                         @can('view_classes')
-                                            <a href="{{ route('classes.show', ['class' => $classroom->id]) }}" class="btn btn-sm btn-outline-primary" title="عرض">
+                                            <a href="{{ route('classes.show', $classroom) }}" class="btn btn-sm btn-outline-primary" title="عرض">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                         @endcan
@@ -138,7 +144,7 @@
                                             </a>
                                         @endcan
                                         @can('delete_classes')
-                                            <form action="{{ route('classes.destroy', ['class' => $classroom->id]) }}" method="POST" onsubmit="return confirm('هل تريد حذف هذا الفصل؟');">
+                                            <form action="{{ route('classes.destroy', $classroom) }}" method="POST" onsubmit="return confirm('هل تريد حذف هذا الفصل؟');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-outline-danger" title="حذف">
