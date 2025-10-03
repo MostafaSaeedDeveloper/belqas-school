@@ -23,17 +23,27 @@
             font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            margin: 0;
             direction: rtl;
             text-align: right;
+            display: flex;
+            justify-content: center;
+        }
+
+        .page-wrapper {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px 20px;
         }
 
         .login-container {
             width: 100%;
             max-width: 450px;
             padding: 20px;
+            margin: auto 0;
         }
 
         .login-card {
@@ -159,7 +169,9 @@
         }
 
         .login-footer {
-            margin-top: 25px;
+            margin-top: auto;
+            padding-top: 20px;
+            padding-bottom: 10px;
             text-align: center;
             color: #fff;
             font-size: 0.95rem;
@@ -410,126 +422,128 @@
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-card">
-            <div class="login-header">
-                <div class="logo">
-                    <i class="fas fa-graduation-cap"></i>
-                </div>
-                <h1 class="login-title"> مدرسة بلقاس المتميزة للغات</h1>
-                <p class="login-subtitle">Belqas O.D.L. School</p>
-            </div>
-
-            <form method="POST" action="{{ route('login') }}" id="loginForm">
-                @csrf
-
-                <div class="form-group">
-                    <label for="username" class="form-label">اسم المستخدم</label>
-                    <div style="position: relative;">
-                        <input
-                            id="username"
-                            type="text"
-                            class="form-control @error('username') is-invalid @enderror"
-                            name="username"
-                            value="{{ old('username') }}"
-                            required
-                            autocomplete="username"
-                            autofocus
-                            placeholder="أدخل اسم المستخدم"
-                        >
-                        <i class="form-icon fas fa-user"></i>
+    <div class="page-wrapper">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <div class="logo">
+                        <i class="fas fa-graduation-cap"></i>
                     </div>
-                    @error('username')
-                        <span class="invalid-feedback">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                    @enderror
+                    <h1 class="login-title"> مدرسة بلقاس المتميزة للغات</h1>
+                    <p class="login-subtitle">Belqas O.D.L. School</p>
                 </div>
 
-                <div class="form-group">
-                    <label for="password" class="form-label">كلمة المرور</label>
-                    <div style="position: relative;">
-                        <input
-                            id="password"
-                            type="password"
-                            class="form-control @error('password') is-invalid @enderror"
-                            name="password"
-                            required
-                            autocomplete="current-password"
-                            placeholder="أدخل كلمة المرور"
-                        >
-                        <i class="form-icon fas fa-lock"></i>
+                <form method="POST" action="{{ route('login') }}" id="loginForm">
+                    @csrf
+
+                    <div class="form-group">
+                        <label for="username" class="form-label">اسم المستخدم</label>
+                        <div style="position: relative;">
+                            <input
+                                id="username"
+                                type="text"
+                                class="form-control @error('username') is-invalid @enderror"
+                                name="username"
+                                value="{{ old('username') }}"
+                                required
+                                autocomplete="username"
+                                autofocus
+                                placeholder="أدخل اسم المستخدم"
+                            >
+                            <i class="form-icon fas fa-user"></i>
+                        </div>
+                        @error('username')
+                            <span class="invalid-feedback">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
-                    @error('password')
-                        <span class="invalid-feedback">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                    @enderror
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">كلمة المرور</label>
+                        <div style="position: relative;">
+                            <input
+                                id="password"
+                                type="password"
+                                class="form-control @error('password') is-invalid @enderror"
+                                name="password"
+                                required
+                                autocomplete="current-password"
+                                placeholder="أدخل كلمة المرور"
+                            >
+                            <i class="form-icon fas fa-lock"></i>
+                        </div>
+                        @error('password')
+                            <span class="invalid-feedback">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
+                    <div class="remember-forgot">
+                        <div class="remember-me">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                name="remember"
+                                id="remember"
+                                {{ old('remember') ? 'checked' : '' }}
+                            >
+                            <label class="form-check-label" for="remember">
+                                تذكرني
+                            </label>
+                        </div>
+
+                        @if (Route::has('password.request'))
+                            <a class="forgot-password" href="{{ route('password.request') }}">
+                                نسيت كلمة المرور؟
+                            </a>
+                        @endif
+                    </div>
+
+                    <button type="submit" class="login-btn" id="loginBtn">
+                        <span class="btn-text">تسجيل الدخول</span>
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </button>
+                </form>
+
+                <div class="divider">
+                    <span>أو جرب الحسابات التجريبية</span>
                 </div>
 
-                <div class="remember-forgot">
-                    <div class="remember-me">
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="remember"
-                            id="remember"
-                            {{ old('remember') ? 'checked' : '' }}
-                        >
-                        <label class="form-check-label" for="remember">
-                            تذكرني
-                        </label>
+                <div class="demo-accounts">
+                    <div class="demo-title">حسابات تجريبية للاختبار</div>
+                    <div class="demo-list">
+                        <div class="demo-item">
+                            <span class="demo-username">admin</span>
+                            <span class="demo-role">مدير عام</span>
+                        </div>
+                        <div class="demo-item">
+                            <span class="demo-username">principal</span>
+                            <span class="demo-role">مدير المدرسة</span>
+                        </div>
+                        <div class="demo-item">
+                            <span class="demo-username">teacher</span>
+                            <span class="demo-role">معلم</span>
+                        </div>
+                        <div class="demo-item">
+                            <span class="demo-username">student</span>
+                            <span class="demo-role">طالب</span>
+                        </div>
                     </div>
-
-                    @if (Route::has('password.request'))
-                        <a class="forgot-password" href="{{ route('password.request') }}">
-                            نسيت كلمة المرور؟
-                        </a>
-                    @endif
-                </div>
-
-                <button type="submit" class="login-btn" id="loginBtn">
-                    <span class="btn-text">تسجيل الدخول</span>
-                    <div class="loading">
-                        <div class="spinner"></div>
+                    <div style="text-align: center; margin-top: 10px; font-size: 0.8rem; color: #666;">
+                        كلمة المرور للجميع: <strong>123456789</strong>
                     </div>
-                </button>
-            </form>
-
-            <div class="divider">
-                <span>أو جرب الحسابات التجريبية</span>
-            </div>
-
-            <div class="demo-accounts">
-                <div class="demo-title">حسابات تجريبية للاختبار</div>
-                <div class="demo-list">
-                    <div class="demo-item">
-                        <span class="demo-username">admin</span>
-                        <span class="demo-role">مدير عام</span>
-                    </div>
-                    <div class="demo-item">
-                        <span class="demo-username">principal</span>
-                        <span class="demo-role">مدير المدرسة</span>
-                    </div>
-                    <div class="demo-item">
-                        <span class="demo-username">teacher</span>
-                        <span class="demo-role">معلم</span>
-                    </div>
-                    <div class="demo-item">
-                        <span class="demo-username">student</span>
-                        <span class="demo-role">طالب</span>
-                    </div>
-                </div>
-                <div style="text-align: center; margin-top: 10px; font-size: 0.8rem; color: #666;">
-                    كلمة المرور للجميع: <strong>123456789</strong>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="login-footer">
-        <i class="fas fa-heart" aria-hidden="true"></i>
-        <span>مساهمه مجانيه من ولي أمر الطلاب (مازن و آسر ) محمد السيد على</span>
+        <div class="login-footer">
+            <i class="fas fa-heart" aria-hidden="true"></i>
+            <span>مساهمه مجانيه من ولي أمر الطلاب (مازن و آسر ) محمد السيد على</span>
+        </div>
     </div>
 
     <script>
