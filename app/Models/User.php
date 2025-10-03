@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -158,6 +159,22 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Subject::class, 'subject_teacher', 'teacher_id', 'subject_id')
             ->withTimestamps();
+    }
+
+    /**
+     * Attendance records linked to the user when enrolled as a student.
+     */
+    public function attendanceRecords(): HasMany
+    {
+        return $this->hasMany(AttendanceRecord::class, 'student_id');
+    }
+
+    /**
+     * Attendance sessions recorded by the user.
+     */
+    public function recordedAttendanceSessions(): HasMany
+    {
+        return $this->hasMany(AttendanceSession::class, 'recorded_by');
     }
 
     /**
