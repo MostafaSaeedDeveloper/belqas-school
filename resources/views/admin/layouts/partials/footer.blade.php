@@ -1,24 +1,10 @@
 <footer class="main-footer">
-    <div class="footer-content">
-        <div class="container-fluid">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <p class="footer-text">
-                        © {{ date('Y') }} مدرسة بلقاس - المنصه هى مساهمه مجانيه من ولي أمر الطلاب (مازن و آسر ) محمد السيد على
-                    </p>
-                </div>
-                <div class="col-md-6 text-end">
-                    <div class="footer-links">
-                        <a href="{{ route('dashboard') }}" class="footer-link">الرئيسية</a>
-                        <a href="#" class="footer-link">المساعدة</a>
-                        <a href="#" class="footer-link">الدعم الفني</a>
-                        <a href="#" class="footer-link">سياسة الخصوصية</a>
-                    </div>
-                    <div class="footer-version">
-                        النسخة 1.0.0
-                    </div>
-                </div>
-            </div>
+    <div class="footer-content text-center">
+        <div class="container">
+            <p class="footer-text">
+                <i class="fas fa-heart text-danger" aria-hidden="true"></i>
+                مساهمه مجانيه من ولي أمر الطلاب (مازن و آسر ) محمد السيد على
+            </p>
         </div>
     </div>
 </footer>
@@ -35,30 +21,11 @@
 .footer-text {
     color: #666;
     margin: 0;
-    font-size: 0.9rem;
+    font-size: 1rem;
 }
 
-.footer-links {
-    display: flex;
-    gap: var(--spacing-lg);
-    margin-bottom: var(--spacing-sm);
-    justify-content: flex-end;
-}
-
-.footer-link {
-    color: #666;
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: var(--transition-fast);
-}
-
-.footer-link:hover {
-    color: var(--primary-color);
-}
-
-.footer-version {
-    color: #999;
-    font-size: 0.8rem;
+.footer-text i {
+    margin-inline-end: 8px;
 }
 
 @media (max-width: 768px) {
@@ -66,15 +33,8 @@
         text-align: center;
     }
 
-    .footer-links {
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: var(--spacing-md);
-    }
-
-    .col-md-6 {
-        text-align: center !important;
-        margin-bottom: var(--spacing-sm);
+    .footer-content {
+        padding: 0 var(--spacing-md);
     }
 }
 </style>

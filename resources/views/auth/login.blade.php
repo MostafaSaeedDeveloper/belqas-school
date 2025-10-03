@@ -158,6 +158,23 @@
             gap: 15px;
         }
 
+        .login-footer {
+            margin-top: 25px;
+            text-align: center;
+            color: #fff;
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .login-footer i {
+            color: #dc3545;
+            margin-inline-end: 6px;
+        }
+
         .remember-me {
             display: flex;
             align-items: center;
@@ -508,6 +525,11 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="login-footer">
+        <i class="fas fa-heart" aria-hidden="true"></i>
+        <span>مساهمه مجانيه من ولي أمر الطلاب (مازن و آسر ) محمد السيد على</span>
     </div>
 
     <script>
