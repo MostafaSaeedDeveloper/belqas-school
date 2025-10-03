@@ -36,7 +36,13 @@
 
                     <h6 class="fw-semibold">رائد الفصل</h6>
                     @if($classroom->homeroomTeacher)
-                        <div class="mb-2">{{ $classroom->homeroomTeacher->name }}</div>
+                        <div class="mb-2">
+                            @can('view_teachers')
+                                <a href="{{ route('teachers.show', $classroom->homeroomTeacher) }}" class="resource-link">{{ $classroom->homeroomTeacher->name }}</a>
+                            @else
+                                {{ $classroom->homeroomTeacher->name }}
+                            @endcan
+                        </div>
                         <div class="text-muted small" dir="ltr">{{ $classroom->homeroomTeacher->email ?? $classroom->homeroomTeacher->username }}</div>
                     @else
                         <div class="text-muted">لم يتم تعيين رائد بعد.</div>
@@ -63,7 +69,13 @@
                     <ul class="list-unstyled mb-0">
                         @forelse($classroom->teachers as $teacher)
                             <li class="mb-2">
-                                <div class="fw-semibold">{{ $teacher->name }}</div>
+                                <div class="fw-semibold">
+                                    @can('view_teachers')
+                                        <a href="{{ route('teachers.show', $teacher) }}" class="resource-link">{{ $teacher->name }}</a>
+                                    @else
+                                        {{ $teacher->name }}
+                                    @endcan
+                                </div>
                                 <div class="text-muted small">{{ $teacher->teacherProfile?->specialization ?? '—' }}</div>
                             </li>
                         @empty
@@ -98,7 +110,13 @@
                                         <td>{{ $subject->grade_level ?? '—' }}</td>
                                         <td>
                                             @if($assignedTeacher)
-                                                <div class="fw-semibold">{{ $assignedTeacher->name }}</div>
+                                                <div class="fw-semibold">
+                                                    @can('view_teachers')
+                                                        <a href="{{ route('teachers.show', $assignedTeacher) }}" class="resource-link">{{ $assignedTeacher->name }}</a>
+                                                    @else
+                                                        {{ $assignedTeacher->name }}
+                                                    @endcan
+                                                </div>
                                                 <div class="text-muted small">{{ $assignedTeacher->teacherProfile?->specialization ?? '—' }}</div>
                                             @else
                                                 <span class="text-muted">لم يتم تحديد معلم</span>
@@ -134,7 +152,13 @@
                                 @forelse($classroom->students as $student)
                                     <tr>
                                         <td>
-                                            <div class="fw-semibold">{{ $student->name }}</div>
+                                            <div class="fw-semibold">
+                                                @can('view_students')
+                                                    <a href="{{ route('students.show', $student) }}" class="resource-link">{{ $student->name }}</a>
+                                                @else
+                                                    {{ $student->name }}
+                                                @endcan
+                                            </div>
                                             <div class="text-muted small" dir="ltr">{{ $student->username }}</div>
                                         </td>
                                         <td>{{ $student->studentProfile?->grade_level ?? '—' }}</td>

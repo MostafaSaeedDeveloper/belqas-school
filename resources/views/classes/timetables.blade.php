@@ -28,7 +28,13 @@
                     <div class="card-header bg-white">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h5 class="card-title mb-1">{{ $classroom->name }}</h5>
+                                <h5 class="card-title mb-1">
+                                    @can('view_classes')
+                                        <a href="{{ route('classes.show', $classroom) }}" class="resource-link">{{ $classroom->name }}</a>
+                                    @else
+                                        {{ $classroom->name }}
+                                    @endcan
+                                </h5>
                                 <div class="text-muted small">{{ $classroom->grade_level }}</div>
                             </div>
                             <span class="badge bg-primary-subtle text-primary">{{ $classroom->subjects->count() }} مادة</span>
@@ -46,7 +52,13 @@
                                         </div>
                                         <div class="text-end">
                                             @if($assignedTeacher)
-                                                <div class="fw-semibold">{{ $assignedTeacher->name }}</div>
+                                                <div class="fw-semibold">
+                                                    @can('view_teachers')
+                                                        <a href="{{ route('teachers.show', $assignedTeacher) }}" class="resource-link">{{ $assignedTeacher->name }}</a>
+                                                    @else
+                                                        {{ $assignedTeacher->name }}
+                                                    @endcan
+                                                </div>
                                                 <div class="text-muted small">{{ $assignedTeacher->teacherProfile?->specialization ?? '—' }}</div>
                                             @else
                                                 <span class="badge bg-warning-subtle text-warning">بدون معلم</span>
@@ -61,7 +73,15 @@
                     </div>
                     <div class="card-footer bg-transparent d-flex justify-content-between align-items-center">
                         <span class="text-muted small">رائد الفصل:
-                            {{ $classroom->homeroomTeacher?->name ?? 'غير محدد' }}
+                            @if($classroom->homeroomTeacher)
+                                @can('view_teachers')
+                                    <a href="{{ route('teachers.show', $classroom->homeroomTeacher) }}" class="resource-link">{{ $classroom->homeroomTeacher->name }}</a>
+                                @else
+                                    {{ $classroom->homeroomTeacher->name }}
+                                @endcan
+                            @else
+                                غير محدد
+                            @endif
                         </span>
                         <span class="text-muted small">عدد الطلاب: {{ $classroom->students->count() }}</span>
                     </div>

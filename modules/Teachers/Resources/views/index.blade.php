@@ -141,7 +141,13 @@
                                     <div class="d-flex align-items-center gap-3">
                                         <img src="{{ $teacher->avatar_url }}" alt="{{ $teacher->name }}" class="rounded-circle" width="42" height="42">
                                         <div>
-                                            <div class="fw-semibold">{{ $teacher->name }}</div>
+                                            <div class="fw-semibold">
+                                                @can('view_teachers')
+                                                    <a href="{{ route('teachers.show', $teacher) }}" class="resource-link">{{ $teacher->name }}</a>
+                                                @else
+                                                    {{ $teacher->name }}
+                                                @endcan
+                                            </div>
                                             <small class="text-muted" dir="ltr">{{ $teacher->username }}</small>
                                         </div>
                                     </div>
