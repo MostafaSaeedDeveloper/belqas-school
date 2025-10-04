@@ -6,6 +6,7 @@ use App\Models\AttendanceRecord;
 use App\Models\AttendanceSession;
 use App\Models\Classroom;
 use App\Models\StudentProfile;
+use App\Models\TeacherProfile;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
@@ -16,7 +17,7 @@ class AttendanceManagementTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected User $manager;
+    protected User $teacher;
 
     protected function setUp(): void
     {
@@ -35,21 +36,26 @@ class AttendanceManagementTest extends TestCase
         }
 
         Role::firstOrCreate(['name' => 'student', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'teacher', 'guard_name' => 'web']);
 
-        $this->manager = User::factory()->create();
-        $this->manager->givePermissionTo($permissions);
+        $this->teacher = User::factory()->create();
+        $this->teacher->assignRole('teacher');
+        $this->teacher->givePermissionTo($permissions);
+        TeacherProfile::factory()->for($this->teacher)->create();
     }
 
-    public function test_user_can_store_daily_attendance(): void
+    public function test_teacher_can_store_daily_attendance_for_assigned_classroom(): void
     {
-        $classroom = Classroom::factory()->create();
+        $classroom = Classroom::factory()->create([
+            'homeroom_teacher_id' => $this->teacher->id,
+        ]);
 
         $student = User::factory()->create();
         $student->assignRole('student');
         StudentProfile::factory()->for($student)->create();
         $classroom->students()->attach($student->id);
 
-        $response = $this->actingAs($this->manager)->post(route('attendance.daily.store'), [
+        $response = $this->actingAs($this->teacher)->post(route('attendance.daily.store'), [
             'classroom_id' => $classroom->id,
             'date' => '2025-10-05',
             'notes' => 'تمت الحصة في معمل العلوم.',
@@ -71,7 +77,7 @@ class AttendanceManagementTest extends TestCase
             'date' => '2025-10-05',
             'notes' => 'تمت الحصة في معمل العلوم.',
             'status' => 'completed',
-            'recorded_by' => $this->manager->id,
+            'recorded_by' => $this->teacher->id,
         ]);
 
         $this->assertDatabaseHas('attendance_records', [
@@ -81,9 +87,66 @@ class AttendanceManagementTest extends TestCase
         ]);
     }
 
-    public function test_reports_view_displays_saved_records(): void
+    public function test_teacher_cannot_store_attendance_for_unassigned_classroom(): void
     {
         $classroom = Classroom::factory()->create();
+
+        $student = User::factory()->create();
+        $student->assignRole('student');
+        StudentProfile::factory()->for($student)->create();
+        $classroom->students()->attach($student->id);
+
+        $response = $this->actingAs($this->teacher)->post(route('attendance.daily.store'), [
+            'classroom_id' => $classroom->id,
+            'date' => '2025-10-05',
+            'records' => [
+                $student->id => [
+                    'status' => AttendanceRecord::STATUS_PRESENT,
+                ],
+            ],
+        ]);
+
+        $response->assertForbidden();
+        $this->assertDatabaseMissing('attendance_sessions', [
+            'classroom_id' => $classroom->id,
+            'date' => '2025-10-05',
+        ]);
+    }
+
+    public function test_student_with_permission_cannot_store_daily_attendance(): void
+    {
+        $classroom = Classroom::factory()->create([
+            'homeroom_teacher_id' => $this->teacher->id,
+        ]);
+
+        $student = User::factory()->create();
+        $student->assignRole('student');
+        $student->givePermissionTo('manage_attendance');
+        StudentProfile::factory()->for($student)->create();
+        $classroom->students()->attach($student->id);
+
+        $response = $this->actingAs($student)->post(route('attendance.daily.store'), [
+            'classroom_id' => $classroom->id,
+            'date' => '2025-10-05',
+            'records' => [
+                $student->id => [
+                    'status' => AttendanceRecord::STATUS_PRESENT,
+                ],
+            ],
+        ]);
+
+        $response->assertForbidden();
+        $this->assertDatabaseMissing('attendance_sessions', [
+            'classroom_id' => $classroom->id,
+            'date' => '2025-10-05',
+        ]);
+    }
+
+    public function test_reports_view_displays_saved_records(): void
+    {
+        $classroom = Classroom::factory()->create([
+            'homeroom_teacher_id' => $this->teacher->id,
+        ]);
 
         $student = User::factory()->create();
         $student->assignRole('student');
@@ -93,7 +156,7 @@ class AttendanceManagementTest extends TestCase
             'classroom_id' => $classroom->id,
             'date' => '2025-10-05',
             'status' => 'completed',
-            'recorded_by' => $this->manager->id,
+            'recorded_by' => $this->teacher->id,
             'notes' => 'حصة صباحية',
         ]);
 
@@ -104,7 +167,7 @@ class AttendanceManagementTest extends TestCase
             'remarks' => 'إجازة مرضية',
         ]);
 
-        $response = $this->actingAs($this->manager)->get(route('attendance.reports', [
+        $response = $this->actingAs($this->teacher)->get(route('attendance.reports', [
             'classroom_id' => $classroom->id,
         ]));
 
@@ -115,7 +178,9 @@ class AttendanceManagementTest extends TestCase
 
     public function test_statistics_view_summarises_monthly_data(): void
     {
-        $classroom = Classroom::factory()->create();
+        $classroom = Classroom::factory()->create([
+            'homeroom_teacher_id' => $this->teacher->id,
+        ]);
 
         $student = User::factory()->create();
         $student->assignRole('student');
@@ -125,7 +190,7 @@ class AttendanceManagementTest extends TestCase
             'classroom_id' => $classroom->id,
             'date' => '2025-10-10',
             'status' => 'completed',
-            'recorded_by' => $this->manager->id,
+            'recorded_by' => $this->teacher->id,
         ]);
 
         AttendanceRecord::create([
@@ -134,7 +199,7 @@ class AttendanceManagementTest extends TestCase
             'status' => AttendanceRecord::STATUS_PRESENT,
         ]);
 
-        $response = $this->actingAs($this->manager)->get(route('attendance.statistics', [
+        $response = $this->actingAs($this->teacher)->get(route('attendance.statistics', [
             'month' => '2025-10',
         ]));
 

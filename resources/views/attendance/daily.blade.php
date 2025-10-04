@@ -45,6 +45,13 @@
         </div>
     </div>
 
+    @if($classrooms->isEmpty())
+        <div class="alert alert-warning">
+            <i class="fas fa-triangle-exclamation"></i>
+            لا توجد فصول دراسية مرتبطة بحسابك لتسجيل الحضور. يرجى التواصل مع الإدارة لإسناد فصولك الدراسية.
+        </div>
+    @endif
+
     @if($classroom)
         <div class="row g-4 mb-4">
             <div class="col-md-3">

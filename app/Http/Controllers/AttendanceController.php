@@ -24,8 +24,10 @@ class AttendanceController extends Controller
     {
         $selectedDate = $this->resolveDate($request->query('date'));
         $classroomId = $request->query('classroom_id');
+        $user = $request->user();
 
-        $classrooms = Classroom::orderBy('grade_level')->orderBy('name')->get();
+        $classrooms = $this->classroomsAccessibleBy($user);
+        $accessibleClassroomIds = $classrooms->pluck('id')->map(fn ($id) => (int) $id);
 
         $classroom = null;
         $session = null;
@@ -35,9 +37,16 @@ class AttendanceController extends Controller
         $lastUpdated = null;
 
         if ($classroomId) {
-            $classroom = Classroom::with(['students' => function ($query) {
-                $query->orderBy('name');
-            }])->find($classroomId);
+            if (! $accessibleClassroomIds->contains((int) $classroomId)) {
+                abort(403, 'غير مصرح لك بإدارة حضور هذا الفصل.');
+            }
+
+            $classroom = Classroom::with([
+                'students' => function ($query) {
+                    $query->orderBy('name');
+                },
+                'teachers',
+            ])->find($classroomId);
 
             if ($classroom) {
                 $students = $classroom->students;
@@ -69,6 +78,63 @@ class AttendanceController extends Controller
     }
 
     /**
+     * Retrieve classrooms the authenticated user can manage attendance for.
+     */
+    protected function classroomsAccessibleBy(?User $user): Collection
+    {
+        if (! $user) {
+            return collect();
+        }
+
+        $query = Classroom::query()
+            ->orderBy('grade_level')
+            ->orderBy('name');
+
+        if ($user->hasRole(['super_admin', 'admin'])) {
+            return $query->get();
+        }
+
+        if ($user->hasRole('teacher')) {
+            return $query
+                ->where(function (Builder $builder) use ($user) {
+                    $builder->where('homeroom_teacher_id', $user->id)
+                        ->orWhereHas('teachers', function (Builder $relation) use ($user) {
+                            $relation->where('teacher_id', $user->id);
+                        });
+                })
+                ->get();
+        }
+
+        return collect();
+    }
+
+    /**
+     * Determine if the given user can manage attendance for the classroom.
+     */
+    protected function userCanManageClassroom(?User $user, Classroom $classroom): bool
+    {
+        if (! $user) {
+            return false;
+        }
+
+        if ($user->hasRole(['super_admin', 'admin'])) {
+            return true;
+        }
+
+        if ($user->hasRole('teacher')) {
+            $classroom->loadMissing('teachers');
+
+            if ((int) $classroom->homeroom_teacher_id === $user->id) {
+                return true;
+            }
+
+            return $classroom->teachers->contains('id', $user->id);
+        }
+
+        return false;
+    }
+
+    /**
      * Store the daily attendance for a classroom.
      */
     public function storeDaily(Request $request): RedirectResponse
@@ -82,7 +148,13 @@ class AttendanceController extends Controller
             'records.*.remarks' => ['nullable', 'string', 'max:255'],
         ]);
 
-        $classroom = Classroom::with('students')->findOrFail($data['classroom_id']);
+        $classroom = Classroom::with(['students', 'teachers'])->findOrFail($data['classroom_id']);
+
+        abort_unless(
+            $this->userCanManageClassroom($request->user(), $classroom),
+            403,
+            'غير مصرح لك بتسجيل حضور هذا الفصل.'
+        );
         $studentIds = $classroom->students->pluck('id')->map(fn ($id) => (int) $id)->all();
 
         $session = AttendanceSession::firstOrCreate([
