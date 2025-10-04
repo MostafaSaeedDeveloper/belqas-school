@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SubjectController;
@@ -33,9 +34,21 @@ Route::middleware(['auth'])->group(function () {
 
     // Attendance Routes
     Route::prefix('attendance')->name('attendance.')->group(function () {
-        Route::get('/daily', function() { return view('attendance.daily'); })->name('daily')->middleware('can:view_attendance');
-        Route::get('/reports', function() { return view('attendance.reports'); })->name('reports')->middleware('can:attendance_reports');
-        Route::get('/statistics', function() { return view('attendance.statistics'); })->name('statistics')->middleware('can:attendance_reports');
+        Route::get('/daily', [AttendanceController::class, 'daily'])
+            ->name('daily')
+            ->middleware('can:view_attendance');
+
+        Route::post('/daily', [AttendanceController::class, 'storeDaily'])
+            ->name('daily.store')
+            ->middleware('can:manage_attendance');
+
+        Route::get('/reports', [AttendanceController::class, 'reports'])
+            ->name('reports')
+            ->middleware('can:attendance_reports');
+
+        Route::get('/statistics', [AttendanceController::class, 'statistics'])
+            ->name('statistics')
+            ->middleware('can:attendance_reports');
     });
 
     // Exams Routes
