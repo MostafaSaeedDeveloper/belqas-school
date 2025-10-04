@@ -155,15 +155,40 @@
                                                     </div>
                                                 </td>
                                                 <td class="text-center">
-                                                    <select name="records[{{ $student->id }}][status]" class="form-select @error('records.' . $student->id . '.status') is-invalid @enderror">
-                                                        @foreach($statuses as $value => $label)
-                                                            <option value="{{ $value }}" @selected(old('records.' . $student->id . '.status', $record->status ?? $defaultStatus) === $value)>
-                                                                {{ $label }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
+                                                    @php($currentStatus = old('records.' . $student->id . '.status', $record->status ?? $defaultStatus))
+
+                                                    <div class="btn-group" role="group" aria-label="حالة حضور {{ $student->name }}">
+                                                        <input
+                                                            type="radio"
+                                                            class="btn-check"
+                                                            name="records[{{ $student->id }}][status]"
+                                                            id="record-{{ $student->id }}-present"
+                                                            value="{{ \App\Models\AttendanceRecord::STATUS_PRESENT }}"
+                                                            autocomplete="off"
+                                                            @checked($currentStatus === \App\Models\AttendanceRecord::STATUS_PRESENT)
+                                                        >
+                                                        <label class="btn btn-outline-success" for="record-{{ $student->id }}-present">
+                                                            <i class="fas fa-user-check"></i>
+                                                            حاضر
+                                                        </label>
+
+                                                        <input
+                                                            type="radio"
+                                                            class="btn-check"
+                                                            name="records[{{ $student->id }}][status]"
+                                                            id="record-{{ $student->id }}-absent"
+                                                            value="{{ \App\Models\AttendanceRecord::STATUS_ABSENT }}"
+                                                            autocomplete="off"
+                                                            @checked($currentStatus === \App\Models\AttendanceRecord::STATUS_ABSENT)
+                                                        >
+                                                        <label class="btn btn-outline-danger" for="record-{{ $student->id }}-absent">
+                                                            <i class="fas fa-user-times"></i>
+                                                            غائب
+                                                        </label>
+                                                    </div>
+
                                                     @error('records.' . $student->id . '.status')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                        <div class="invalid-feedback d-block">{{ $message }}</div>
                                                     @enderror
                                                 </td>
                                                 <td>
