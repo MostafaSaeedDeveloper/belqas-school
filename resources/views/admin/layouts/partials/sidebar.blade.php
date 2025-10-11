@@ -121,8 +121,10 @@
                     </a>
                     <ul class="nav-submenu">
                         <li><a href="{{ route('attendance.daily') }}" class="nav-link {{ request()->routeIs('attendance.daily') ? 'active' : '' }}"><i class="far fa-circle"></i> الحضور اليومي</a></li>
-                        <li><a href="{{ route('attendance.reports') }}" class="nav-link {{ request()->routeIs('attendance.reports') ? 'active' : '' }}"><i class="far fa-circle"></i> تقارير الحضور</a></li>
-                        <li><a href="{{ route('attendance.statistics') }}" class="nav-link {{ request()->routeIs('attendance.statistics') ? 'active' : '' }}"><i class="far fa-circle"></i> إحصائيات الحضور</a></li>
+                        @can('attendance_reports')
+                            <li><a href="{{ route('attendance.reports') }}" class="nav-link {{ request()->routeIs('attendance.reports') ? 'active' : '' }}"><i class="far fa-circle"></i> تقارير الحضور</a></li>
+                            <li><a href="{{ route('attendance.statistics') }}" class="nav-link {{ request()->routeIs('attendance.statistics') ? 'active' : '' }}"><i class="far fa-circle"></i> إحصائيات الحضور</a></li>
+                        @endcan
                     </ul>
                 </li>
                 @endcan
@@ -167,7 +169,9 @@
                     <ul class="nav-submenu">
                         <li><a href="{{ route('reports.index') }}" class="nav-link {{ request()->routeIs('reports.index') ? 'active' : '' }}"><i class="far fa-circle"></i> التقارير العامة</a></li>
                         <li><a href="{{ route('reports.academic') }}" class="nav-link {{ request()->routeIs('reports.academic') ? 'active' : '' }}"><i class="far fa-circle"></i> التحليلات الأكاديمية</a></li>
-                        <li><a href="{{ route('reports.attendance') }}" class="nav-link {{ request()->routeIs('reports.attendance') ? 'active' : '' }}"><i class="far fa-circle"></i> تقارير الحضور</a></li>
+                        @can('attendance_reports')
+                            <li><a href="{{ route('reports.attendance') }}" class="nav-link {{ request()->routeIs('reports.attendance') ? 'active' : '' }}"><i class="far fa-circle"></i> تقارير الحضور</a></li>
+                        @endcan
                     </ul>
                 </li>
                 @endcan
@@ -183,7 +187,6 @@
                         <li><a href="{{ route('settings.general') }}" class="nav-link {{ request()->routeIs('settings.general') ? 'active' : '' }}"><i class="far fa-circle"></i> الإعدادات العامة</a></li>
                         <li><a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}"><i class="far fa-circle"></i> إدارة المستخدمين</a></li>
                         <li><a href="{{ route('settings.permissions') }}" class="nav-link {{ request()->routeIs('settings.permissions') ? 'active' : '' }}"><i class="far fa-circle"></i> الصلاحيات</a></li>
-                        <li><a href="{{ route('settings.backup') }}" class="nav-link {{ request()->routeIs('settings.backup') ? 'active' : '' }}"><i class="far fa-circle"></i> النسخ الاحتياطي</a></li>
                     </ul>
                 </li>
                 @endcan

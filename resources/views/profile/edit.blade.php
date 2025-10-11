@@ -12,22 +12,51 @@
 @endsection
 
 @section('content')
-    @include('admin.shared.placeholder', [
-        'icon' => 'fas fa-user-cog',
-        'title' => 'تحديث بيانات الحساب',
-        'description' => 'سيتم توفير نموذج لتعديل بيانات الاتصال، الصورة الشخصية، وكلمة المرور الخاصة بك.',
-        'tips' => [
-            'استخدم كلمة مرور قوية تحتوي على حروف وأرقام ورموز.',
-            'قم بتحديث الصورة الشخصية لتعكس هويتك داخل النظام.',
-            'راجع بيانات التواصل لضمان تلقيك الإشعارات المهمة.',
-        ],
-        'actions' => [
-            [
-                'label' => 'عرض الملف الشخصي',
-                'href' => route('profile.show'),
-                'style' => 'outline-secondary',
-                'icon' => 'fas fa-id-card',
-            ],
-        ],
-    ])
+    <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="card shadow-sm">
+        @csrf
+        @method('PUT')
+        <div class="card-body">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">الاسم الكامل</label>
+                    <input type="text" name="name" class="form-control" value="{{ old('name', $user->name) }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">اسم المستخدم</label>
+                    <input type="text" name="username" class="form-control" value="{{ old('username', $user->username) }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">البريد الإلكتروني</label>
+                    <input type="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" placeholder="example@domain.com">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">رقم الهاتف</label>
+                    <input type="text" name="phone" class="form-control" value="{{ old('phone', $user->phone) }}" placeholder="01000000000">
+                </div>
+                <div class="col-12">
+                    <label class="form-label fw-bold">العنوان</label>
+                    <input type="text" name="address" class="form-control"
+                           value="{{ old('address', optional($user->studentProfile)->address ?? optional($user->teacherProfile)->address) }}"
+                           placeholder="العنوان الكامل">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">كلمة المرور الجديدة</label>
+                    <input type="password" name="password" class="form-control" placeholder="اتركها فارغة للإبقاء على الحالية">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">تأكيد كلمة المرور</label>
+                    <input type="password" name="password_confirmation" class="form-control" placeholder="إعادة إدخال كلمة المرور">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">الصورة الشخصية</label>
+                    <input type="file" name="avatar" class="form-control" accept="image/*">
+                    <small class="text-muted">الصيغ المسموح بها: JPG, PNG بحجم لا يتجاوز 2MB.</small>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-white text-end">
+            <a href="{{ route('profile.show') }}" class="btn btn-light">إلغاء</a>
+            <button class="btn btn-primary" type="submit"><i class="fas fa-save me-2"></i>حفظ التغييرات</button>
+        </div>
+    </form>
 @endsection
