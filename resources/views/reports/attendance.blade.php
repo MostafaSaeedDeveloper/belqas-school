@@ -69,7 +69,7 @@
                             <tbody>
                             @forelse($byDay as $row)
                                 <tr>
-                                    <td>{{ \\Carbon\\Carbon::parse($row['date'])->translatedFormat('d/m/Y') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($row['date'])->translatedFormat('d/m/Y') }}</td>
                                     <td><span class="badge bg-success">{{ number_format($row['rate'], 1) }}%</span></td>
                                 </tr>
                             @empty

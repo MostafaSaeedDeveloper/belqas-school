@@ -49,7 +49,7 @@
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
             <div>
                 <h5 class="mb-1">{{ $selectedClassroom->name }}</h5>
-                <p class="text-muted mb-0">عدد الطلاب: {{ $students->count() }} | تاريخ المتابعة: {{ \\Carbon\\Carbon::parse($selectedDate)->translatedFormat('d F Y') }}</p>
+                <p class="text-muted mb-0">عدد الطلاب: {{ $students->count() }} | تاريخ المتابعة: {{ \Carbon\Carbon::parse($selectedDate)->translatedFormat('d F Y') }}</p>
             </div>
             @can('attendance_reports')
                 <a href="{{ route('attendance.reports', ['classroom_id' => $selectedClassroom->id, 'start_date' => $selectedDate, 'end_date' => $selectedDate]) }}"

@@ -75,7 +75,7 @@
                             <tbody>
                             @forelse($recentRecords as $record)
                                 <tr>
-                                    <td>{{ \\Carbon\\Carbon::parse($record->attendance_date)->translatedFormat('d M Y') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($record->attendance_date)->translatedFormat('d M Y') }}</td>
                                     <td>{{ $record->student->name }}</td>
                                     <td>{{ $record->classroom->name }}</td>
                                     <td>

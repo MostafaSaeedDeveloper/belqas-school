@@ -110,7 +110,7 @@
                                 <tr>
                                     <td>{{ $record->student->name }}</td>
                                     <td>{{ $record->classroom->name }}</td>
-                                    <td>{{ \\Carbon\\Carbon::parse($record->attendance_date)->translatedFormat('d/m/Y') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($record->attendance_date)->translatedFormat('d/m/Y') }}</td>
                                     <td>
                                         <span class="badge bg-{{ $record->status === 'present' ? 'success' : ($record->status === 'late' ? 'warning' : 'danger') }}">
                                             {{ $record->status_label }}
