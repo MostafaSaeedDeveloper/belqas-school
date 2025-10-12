@@ -425,7 +425,7 @@
     }
 
     .analytics-list li strong {
-        color: #2563eb;
+        color: var(--school-primary, #2c5aa0);
     }
 
     .calendar-events {
@@ -452,7 +452,7 @@
         width: 58px;
         height: 58px;
         border-radius: 18px;
-        background: linear-gradient(135deg, #2563eb, #60a5fa);
+        background: linear-gradient(135deg, var(--school-primary, #2c5aa0), #1b3f72);
         color: #fff;
         font-weight: 700;
     }

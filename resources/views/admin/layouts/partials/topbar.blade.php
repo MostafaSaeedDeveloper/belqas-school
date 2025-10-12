@@ -67,12 +67,6 @@
                     </div>
                 </div>
             </div>
-            <button class="icon-btn" title="المهام">
-                <i class="fas fa-clipboard-check"></i>
-            </button>
-            <button class="icon-btn" title="المساعدة">
-                <i class="fas fa-circle-question"></i>
-            </button>
         </div>
 
         <div class="header-profile">

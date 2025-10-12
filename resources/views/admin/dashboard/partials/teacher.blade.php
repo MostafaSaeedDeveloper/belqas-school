@@ -221,8 +221,9 @@
     <style>
         .teacher-dashboard .teacher-hero-card {
             border: none;
-            background: linear-gradient(135deg, #2563eb, #1e40af);
+            background: linear-gradient(135deg, var(--school-primary, #2c5aa0), #163462);
             color: #fff;
+            box-shadow: 0 20px 45px rgba(22, 52, 98, 0.28);
         }
 
         .teacher-hero-card .hero-label {
@@ -249,14 +250,14 @@
             background: #fff;
             border-radius: 1rem;
             padding: 1.5rem;
-            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
-            border: none;
+            box-shadow: 0 18px 40px rgba(22, 52, 98, 0.08);
+            border: 1px solid rgba(44, 90, 160, 0.08);
             height: 100%;
         }
 
         .role-stat-card .stat-label {
             font-size: 0.9rem;
-            color: #64748b;
+            color: rgba(15, 23, 42, 0.6);
             display: block;
             margin-bottom: 0.5rem;
         }
@@ -264,12 +265,12 @@
         .role-stat-card .stat-value {
             font-size: 1.8rem;
             font-weight: 700;
-            color: #0f172a;
+            color: #15315a;
         }
 
         .role-stat-card .stat-hint {
             font-size: 0.8rem;
-            color: #94a3b8;
+            color: rgba(15, 23, 42, 0.45);
         }
 
         .attendance-progress {
@@ -280,7 +281,7 @@
         }
 
         .attendance-progress .progress-bar {
-            background: linear-gradient(90deg, #22c55e, #16a34a);
+            background: linear-gradient(90deg, rgba(34, 197, 94, 0.85), rgba(22, 52, 98, 0.85));
         }
 
         .attendance-chip {
