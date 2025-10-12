@@ -73,8 +73,6 @@ class AttendanceController extends Controller
             'date' => 'required|date',
             'attendance' => 'required|array',
             'attendance.*.status' => 'required|in:present,absent,late,excused',
-            'attendance.*.check_in_time' => 'nullable|date_format:H:i',
-            'attendance.*.check_out_time' => 'nullable|date_format:H:i',
             'attendance.*.notes' => 'nullable|string|max:500',
         ]);
 
@@ -99,8 +97,6 @@ class AttendanceController extends Controller
                         'classroom_id' => $classroom->id,
                         'recorded_by' => $user->id,
                         'status' => $payload['status'],
-                        'check_in_time' => $payload['check_in_time'] ?: null,
-                        'check_out_time' => $payload['check_out_time'] ?: null,
                         'notes' => $payload['notes'] ?: null,
                     ]
                 );

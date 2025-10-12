@@ -18,8 +18,6 @@ return new class extends Migration
             $table->foreignId('recorded_by')->constrained('users')->cascadeOnDelete();
             $table->date('attendance_date');
             $table->enum('status', ['present', 'absent', 'late', 'excused'])->default('present');
-            $table->time('check_in_time')->nullable();
-            $table->time('check_out_time')->nullable();
             $table->string('notes', 500)->nullable();
             $table->timestamps();
 

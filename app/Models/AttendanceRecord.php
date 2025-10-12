@@ -19,8 +19,6 @@ class AttendanceRecord extends Model
         'recorded_by',
         'attendance_date',
         'status',
-        'check_in_time',
-        'check_out_time',
         'notes',
     ];
 
@@ -29,8 +27,6 @@ class AttendanceRecord extends Model
      */
     protected $casts = [
         'attendance_date' => 'date',
-        'check_in_time' => 'datetime:H:i',
-        'check_out_time' => 'datetime:H:i',
     ];
 
     /**

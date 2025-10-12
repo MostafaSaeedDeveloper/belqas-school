@@ -73,8 +73,6 @@
                                 <tr>
                                     <th>الطالب</th>
                                     <th class="text-center">الحالة</th>
-                                    <th class="text-center">وقت الحضور</th>
-                                    <th class="text-center">وقت الانصراف</th>
                                     <th>ملاحظات</th>
                                 </tr>
                                 </thead>
@@ -93,7 +91,7 @@
                                         </td>
                                         <td class="text-center">
                                             @can('create_attendance')
-                                                <div class="btn-group" role="group">
+                                                <div class="attendance-status-toggle">
                                                     @foreach($statuses as $value => $label)
                                                         <input type="radio"
                                                                class="btn-check"
@@ -101,31 +99,13 @@
                                                                value="{{ $value }}"
                                                                id="status-{{ $student->id }}-{{ $value }}"
                                                                {{ ($record?->status ?? 'present') === $value ? 'checked' : '' }}>
-                                                        <label class="btn btn-sm btn-outline-primary" for="status-{{ $student->id }}-{{ $value }}">{{ $label }}</label>
+                                                        <label class="btn attendance-status-option status-{{ $value }}" for="status-{{ $student->id }}-{{ $value }}">{{ $label }}</label>
                                                     @endforeach
                                                 </div>
                                             @else
                                                 <span class="badge bg-{{ $record?->status === 'present' ? 'success' : ($record?->status === 'late' ? 'warning' : 'danger') }}">
                                                     {{ $record?->status_label ?? 'غير مسجل' }}
                                                 </span>
-                                            @endcan
-                                        </td>
-                                        <td class="text-center" style="max-width: 140px;">
-                                            @can('create_attendance')
-                                                <input type="time" class="form-control form-control-sm"
-                                                       name="attendance[{{ $student->id }}][check_in_time]"
-                                                       value="{{ $record?->check_in_time?->format('H:i') }}">
-                                            @else
-                                                <span>{{ optional($record?->check_in_time)->format('H:i') ?? '—' }}</span>
-                                            @endcan
-                                        </td>
-                                        <td class="text-center" style="max-width: 140px;">
-                                            @can('create_attendance')
-                                                <input type="time" class="form-control form-control-sm"
-                                                       name="attendance[{{ $student->id }}][check_out_time]"
-                                                       value="{{ $record?->check_out_time?->format('H:i') }}">
-                                            @else
-                                                <span>{{ optional($record?->check_out_time)->format('H:i') ?? '—' }}</span>
                                             @endcan
                                         </td>
                                         <td>
@@ -141,7 +121,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center py-4 text-muted">لا توجد بيانات طلاب لهذا الفصل.</td>
+                                        <td colspan="3" class="text-center py-4 text-muted">لا توجد بيانات طلاب لهذا الفصل.</td>
                                     </tr>
                                 @endforelse
                                 </tbody>
