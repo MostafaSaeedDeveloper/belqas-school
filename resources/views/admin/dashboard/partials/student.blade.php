@@ -202,17 +202,48 @@
             background: rgba(255, 255, 255, 0.2);
             font-weight: 600;
             margin-bottom: 0.75rem;
+            color: #fff;
         }
 
         .student-hero-card .hero-title {
             font-size: 1.75rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
+            color: #fff;
         }
 
         .student-hero-card .hero-subtitle {
             margin: 0;
-            opacity: 0.85;
+            opacity: 0.92;
+            color: #fff;
+        }
+
+        .student-hero-actions .btn.btn-primary {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.35);
+            color: #fff;
+            backdrop-filter: blur(6px);
+        }
+
+        .student-hero-actions .btn.btn-primary:hover,
+        .student-hero-actions .btn.btn-primary:focus {
+            background: rgba(255, 255, 255, 0.26);
+            border-color: rgba(255, 255, 255, 0.45);
+            color: #fff;
+        }
+
+        .student-hero-actions .btn.btn-outline-primary {
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.45);
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(6px);
+        }
+
+        .student-hero-actions .btn.btn-outline-primary:hover,
+        .student-hero-actions .btn.btn-outline-primary:focus {
+            color: #0f172a;
+            background: #fff;
+            border-color: #fff;
         }
 
         .student-dashboard .role-stat-card {
