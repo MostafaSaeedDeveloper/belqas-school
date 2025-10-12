@@ -765,3 +765,127 @@ button:focus,
 .placeholder-tips .list-group-item + .list-group-item {
     border-top: 1px dashed rgba(0, 0, 0, 0.08);
 }
+
+/* Dashboard search suggestions */
+.search-field {
+    position: relative;
+}
+
+.search-suggestions {
+    position: absolute;
+    top: calc(100% + 0.75rem);
+    right: 0;
+    width: min(320px, 90vw);
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+    border: 1px solid rgba(226, 232, 240, 0.6);
+    padding: 0.75rem 0;
+    z-index: 1200;
+}
+
+.search-suggestions[hidden] {
+    display: none;
+}
+
+.search-suggestion {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: #0f172a;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.search-suggestion + .search-suggestion {
+    border-top: 1px solid rgba(226, 232, 240, 0.6);
+}
+
+.search-suggestion:hover {
+    background: rgba(37, 99, 235, 0.08);
+}
+
+.search-suggestion-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.search-suggestion-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.35rem;
+    color: #64748b;
+    font-size: 0.8rem;
+}
+
+.search-suggestion.is-loading {
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.search-suggestion.is-empty {
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.search-suggestion.is-error {
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.insights-grid {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+}
+
+@media (min-width: 992px) {
+    .insights-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.news-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    color: #475569;
+}
+
+.news-type {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-weight: 600;
+    background: rgba(37, 99, 235, 0.12);
+    color: #1d4ed8;
+}
+
+.news-type.is-news {
+    background: rgba(14, 165, 233, 0.15);
+    color: #0284c7;
+}
+
+.news-type.is-announcement {
+    background: rgba(249, 115, 22, 0.15);
+    color: #c2410c;
+}
+
+.news-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #0f172a;
+    font-weight: 500;
+}
+
+.news-date.is-draft {
+    background: linear-gradient(180deg, #94a3b8 0%, #cbd5f5 100%);
+}

@@ -14,6 +14,7 @@
         <div class="search-field">
             <i class="fas fa-search"></i>
             <input type="text" class="search-input" placeholder="البحث السريع داخل النظام">
+            <div class="search-suggestions" data-search-results hidden></div>
         </div>
 
         @php
@@ -66,12 +67,6 @@
                     </div>
                 </div>
             </div>
-            <button class="icon-btn" title="المهام">
-                <i class="fas fa-clipboard-check"></i>
-            </button>
-            <button class="icon-btn" title="المساعدة">
-                <i class="fas fa-circle-question"></i>
-            </button>
         </div>
 
         <div class="header-profile">

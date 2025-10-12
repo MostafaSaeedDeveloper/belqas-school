@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Models\User;
+use App\Support\DashboardMetrics;
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\DashboardController;
@@ -85,6 +88,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/financial', [ReportController::class, 'financial'])->name('financial');
     });
 
+    // Announcements Routes
+    Route::resource('announcements', AnnouncementController::class)->except(['show']);
+
     // Settings Routes
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('/general', [SettingController::class, 'general'])->name('general');
@@ -120,44 +126,111 @@ Route::middleware(['auth'])->prefix('api')->name('api.')->group(function () {
 
     // Dashboard Stats
     Route::get('/dashboard/stats', function() {
+        $metrics = DashboardMetrics::build(auth()->user());
+
         return response()->json([
-            'students' => 1247,
-            'teachers' => 85,
-            'classes' => 24,
-            'attendance' => 94
+            'role' => $metrics['role'] ?? 'admin',
+            'stats' => $metrics['stats'],
+            'attendanceSummary' => $metrics['attendanceSummary'],
+            'studentTrend' => $metrics['studentTrend'],
+            'attendanceTrend' => $metrics['attendanceTrend']->values()->toArray(),
+            'studentGrowth' => $metrics['studentGrowth']->values()->toArray(),
+            'announcements' => $metrics['announcementFeed'],
         ]);
     })->name('dashboard.stats');
 
     // Search API
     Route::get('/search', function() {
-        $query = request('q');
-        // Mock search results
-        return response()->json([
-            [
-                'type' => 'student',
-                'name' => 'أحمد محمد علي',
-                'id' => '12345'
-            ],
-            [
-                'type' => 'teacher',
-                'name' => 'فاطمة أحمد',
-                'id' => '67890'
-            ]
-        ]);
+        $query = trim(request('q', ''));
+
+        if ($query === '') {
+            return response()->json([]);
+        }
+
+        $canViewUsers = auth()->user()?->can('view_users') ?? false;
+        $roleLabels = [
+            'student' => 'طالب',
+            'teacher' => 'معلم',
+            'parent' => 'ولي أمر',
+            'admin' => 'مشرف',
+            'super-admin' => 'مدير النظام',
+        ];
+
+        $users = User::query()
+            ->with('roles')
+            ->where(function ($builder) use ($query) {
+                $builder
+                    ->where('name', 'like', "%{$query}%")
+                    ->orWhere('email', 'like', "%{$query}%");
+            })
+            ->orderByDesc('created_at')
+            ->limit(8)
+            ->get();
+
+        $results = $users->map(function ($user) use ($roleLabels, $canViewUsers) {
+            $roleKey = $user->getRoleNames()->first();
+            $roleLabel = $roleLabels[$roleKey] ?? ($roleKey ? ucfirst($roleKey) : 'مستخدم');
+
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $roleLabel,
+                'role_key' => $roleKey,
+                'url' => $canViewUsers ? route('users.show', $user) : null,
+            ];
+        });
+
+        return response()->json($results);
     })->name('search');
 
     // Notifications API
     Route::get('/notifications', function() {
-        return response()->json([
-            [
-                'id' => 1,
-                'title' => 'طالب جديد',
-                'message' => 'تم تسجيل طالب جديد',
-                'time' => '5 دقائق',
+        $metrics = DashboardMetrics::build(auth()->user());
+        $notifications = [];
+
+        $attendanceSummary = $metrics['attendanceSummary'];
+        if (! is_null($attendanceSummary['percentage'])) {
+            $notifications[] = [
+                'id' => 'attendance-daily',
+                'title' => 'متابعة الحضور',
+                'message' => 'تم تسجيل ' . number_format($attendanceSummary['total_marked']) . ' سجل حضور اليوم.',
+                'time' => now()->diffForHumans(),
+                'type' => $attendanceSummary['percentage'] >= 90 ? 'success' : 'warning',
+                'read' => false,
+            ];
+        }
+
+        $nextExam = $metrics['upcomingExams']->first();
+        if ($nextExam) {
+            $notifications[] = [
+                'id' => 'exam-' . $nextExam->id,
+                'title' => 'امتحان قريب',
+                'message' => sprintf(
+                    'امتحان %s يوم %s.',
+                    $nextExam->subject?->name ?? 'بدون مادة',
+                    optional($nextExam->exam_date)->translatedFormat('l j F')
+                ),
+                'time' => optional($nextExam->exam_date)->diffForHumans(),
                 'type' => 'info',
-                'read' => false
-            ]
-        ]);
+                'read' => false,
+            ];
+        }
+
+        $newUser = $metrics['recentUsers']->first();
+        if ($newUser) {
+            $role = $newUser->getRoleNames()->first() ?? 'مستخدم';
+            $notifications[] = [
+                'id' => 'user-' . $newUser->id,
+                'title' => 'انضمام مستخدم جديد',
+                'message' => $newUser->name . ' انضم بدور ' . $role . '.',
+                'time' => $newUser->created_at->diffForHumans(),
+                'type' => 'info',
+                'read' => false,
+            ];
+        }
+
+        return response()->json($notifications);
     })->name('notifications');
 
 });
