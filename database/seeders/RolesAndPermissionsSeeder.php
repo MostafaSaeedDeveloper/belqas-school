@@ -132,7 +132,6 @@ class RolesAndPermissionsSeeder extends Seeder
             // الإعدادات
             'view_settings' => 'عرض الإعدادات',
             'edit_settings' => 'تعديل الإعدادات',
-            'system_backup' => 'النسخ الاحتياطي',
         ];
 
         $count = 0;
@@ -175,15 +174,15 @@ class RolesAndPermissionsSeeder extends Seeder
                     'view_classes', 'create_classes', 'edit_classes', 'delete_classes',
                     'view_subjects', 'create_subjects', 'edit_subjects', 'delete_subjects',
                     'view_timetable', 'create_timetable', 'edit_timetable',
-                    'view_attendance', 'attendance_reports',
-                    'view_exams', 'create_exams', 'edit_exams',
-                    'view_grades', 'grades_reports',
+                    'view_attendance', 'create_attendance', 'edit_attendance', 'delete_attendance', 'attendance_reports',
+                    'view_exams', 'create_exams', 'edit_exams', 'delete_exams',
+                    'view_grades', 'create_grades', 'edit_grades', 'delete_grades', 'grades_reports',
                     'view_fees', 'create_fees', 'edit_fees',
                     'view_payments', 'financial_reports',
                     'view_notifications', 'create_notifications',
                     'view_messages', 'send_messages',
                     'view_reports', 'export_reports',
-                    'view_settings'
+                    'view_settings', 'edit_settings'
                 ]
             ],
 
@@ -196,20 +195,19 @@ class RolesAndPermissionsSeeder extends Seeder
                     'view_classes',
                     'view_subjects',
                     'view_timetable',
-                    'view_attendance', 'create_attendance', 'edit_attendance',
+                    'view_attendance', 'create_attendance', 'edit_attendance', 'attendance_reports',
                     'view_exams', 'create_exams', 'edit_exams',
-                    'view_grades', 'create_grades', 'edit_grades',
+                    'view_grades', 'create_grades', 'edit_grades', 'grades_reports',
                     'view_messages', 'send_messages'
                 ]
             ],
 
             'student' => [
                 'display_name' => 'طالب',
-                'description' => 'الوصول للدرجات والحضور',
+                'description' => 'الوصول للدرجات والجداول الدراسية',
                 'permissions' => [
                     'view_dashboard',
                     'view_timetable',
-                    'view_attendance',
                     'view_grades',
                     'view_exams',
                     'view_library',

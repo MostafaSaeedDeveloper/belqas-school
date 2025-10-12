@@ -187,11 +187,79 @@
     padding: 0.65rem 0;
     color: #0f172a;
     font-weight: 500;
+    width: 100%;
+    justify-content: flex-start;
+    border: 0;
+    background: transparent;
     transition: color 0.2s ease;
 }
 
 .dropdown-link i {
     color: #2563eb;
+}
+
+/* Attendance status toggle */
+.attendance-status-toggle {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    gap: 0.5rem;
+}
+
+.attendance-status-option {
+    border-radius: 999px;
+    border-width: 1.5px;
+    font-weight: 600;
+    padding: 0.35rem 0.75rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.attendance-status-option.status-present {
+    border-color: var(--school-success);
+    color: var(--school-success);
+}
+
+.attendance-status-option.status-absent {
+    border-color: var(--school-danger);
+    color: var(--school-danger);
+}
+
+.attendance-status-option.status-late {
+    border-color: var(--school-warning);
+    color: #b47a00;
+}
+
+.attendance-status-option.status-excused {
+    border-color: var(--school-info);
+    color: var(--school-info);
+}
+
+.btn-check:checked + .attendance-status-option.status-present,
+.btn-check:checked + .attendance-status-option.status-absent,
+.btn-check:checked + .attendance-status-option.status-late,
+.btn-check:checked + .attendance-status-option.status-excused {
+    color: #fff;
+}
+
+.btn-check:checked + .attendance-status-option.status-present {
+    background-color: var(--school-success);
+}
+
+.btn-check:checked + .attendance-status-option.status-absent {
+    background-color: var(--school-danger);
+}
+
+.btn-check:checked + .attendance-status-option.status-late {
+    background-color: var(--school-warning);
+    color: #4f3b00;
+}
+
+.btn-check:checked + .attendance-status-option.status-excused {
+    background-color: var(--school-info);
+}
+
+.btn-check:focus + .attendance-status-option,
+.btn-check:active + .attendance-status-option {
+    box-shadow: 0 0 0 0.2rem rgba(44, 90, 160, 0.15);
 }
 
 .dropdown-link:hover,
@@ -205,6 +273,10 @@
 
 .dropdown-link.text-danger i {
     color: currentColor;
+}
+
+.dropdown form {
+    margin: 0;
 }
 
 .dropdown hr {

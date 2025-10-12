@@ -63,4 +63,8 @@
             closeAll();
         }
     });
+
+    document.querySelectorAll('.profile-dropdown form').forEach(form => {
+        form.addEventListener('submit', () => closeAll());
+    });
 })();
