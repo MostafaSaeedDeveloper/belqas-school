@@ -20,6 +20,8 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('admin.dashboard', DashboardMetrics::build());
+        $metrics = DashboardMetrics::build(auth()->user());
+
+        return view('admin.dashboard', $metrics);
     }
 }

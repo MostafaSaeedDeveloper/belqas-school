@@ -1,6 +1,7 @@
 class Dashboard {
     constructor() {
         this.state = {
+            role: 'admin',
             stats: {},
             attendanceSummary: {},
             studentTrend: {},
@@ -204,6 +205,8 @@ class Dashboard {
         const list = Array.isArray(items) ? items : [];
         this.announcementList.innerHTML = '';
 
+        const allowCreate = (this.state.role || 'admin') === 'admin';
+
         if (list.length === 0) {
             const empty = document.createElement('div');
             empty.className = 'empty-state';
@@ -219,15 +222,17 @@ class Dashboard {
             message.textContent = 'لم تتم إضافة أخبار أو إعلانات بعد.';
             empty.appendChild(message);
 
-            const action = document.createElement('a');
-            action.className = 'btn btn-soft-primary btn-sm mt-2';
-            action.href = this.announcementCreateUrl;
+            if (allowCreate) {
+                const action = document.createElement('a');
+                action.className = 'btn btn-soft-primary btn-sm mt-2';
+                action.href = this.announcementCreateUrl;
 
-            const actionIcon = document.createElement('i');
-            actionIcon.className = 'fas fa-plus';
-            action.appendChild(actionIcon);
-            action.appendChild(document.createTextNode(' إنشاء أول رسالة'));
-            empty.appendChild(action);
+                const actionIcon = document.createElement('i');
+                actionIcon.className = 'fas fa-plus';
+                action.appendChild(actionIcon);
+                action.appendChild(document.createTextNode(' إنشاء أول رسالة'));
+                empty.appendChild(action);
+            }
 
             this.announcementList.appendChild(empty);
             return;

@@ -126,9 +126,10 @@ Route::middleware(['auth'])->prefix('api')->name('api.')->group(function () {
 
     // Dashboard Stats
     Route::get('/dashboard/stats', function() {
-        $metrics = DashboardMetrics::build();
+        $metrics = DashboardMetrics::build(auth()->user());
 
         return response()->json([
+            'role' => $metrics['role'] ?? 'admin',
             'stats' => $metrics['stats'],
             'attendanceSummary' => $metrics['attendanceSummary'],
             'studentTrend' => $metrics['studentTrend'],
@@ -185,7 +186,7 @@ Route::middleware(['auth'])->prefix('api')->name('api.')->group(function () {
 
     // Notifications API
     Route::get('/notifications', function() {
-        $metrics = DashboardMetrics::build();
+        $metrics = DashboardMetrics::build(auth()->user());
         $notifications = [];
 
         $attendanceSummary = $metrics['attendanceSummary'];

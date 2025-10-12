@@ -6,6 +6,7 @@ use App\Models\Announcement;
 use App\Models\AttendanceRecord;
 use App\Models\Classroom;
 use App\Models\ExamSchedule;
+use App\Models\GradeRecord;
 use App\Models\Subject;
 use App\Models\User;
 use Carbon\Carbon;
@@ -19,7 +20,63 @@ class DashboardMetrics
     /**
      * Build the dashboard metrics dataset used by the UI and APIs.
      */
-    public static function build(): array
+    public static function build(?User $user = null): array
+    {
+        $user = $user ?: auth()->user();
+
+        return match (static::resolveRole($user)) {
+            'teacher' => static::buildForTeacher($user),
+            'student' => static::buildForStudent($user),
+            default => static::buildForAdmin($user),
+        };
+    }
+
+    /**
+     * Prepare the headline stats for administrative roles.
+     */
+    protected static function buildStats(): array
+    {
+        return [
+            'students' => User::role('student')->count(),
+            'teachers' => User::role('teacher')->count(),
+            'parents' => User::role('parent')->count(),
+            'classes' => Classroom::count(),
+            'classrooms' => Classroom::count(),
+            'subjects' => Subject::count(),
+            'total_users' => User::count(),
+            'roles' => Role::count(),
+            'permissions' => Permission::count(),
+        ];
+    }
+
+    /**
+     * Determine the canonical dashboard role for the given user.
+     */
+    protected static function resolveRole(?User $user): string
+    {
+        if (! $user) {
+            return 'admin';
+        }
+
+        if ($user->hasAnyRole(['super_admin', 'admin'])) {
+            return 'admin';
+        }
+
+        if ($user->hasRole('teacher')) {
+            return 'teacher';
+        }
+
+        if ($user->hasRole('student')) {
+            return 'student';
+        }
+
+        return 'admin';
+    }
+
+    /**
+     * Build metrics for administrators and supervisors.
+     */
+    protected static function buildForAdmin(?User $user = null): array
     {
         $now = Carbon::now();
         $today = $now->copy()->startOfDay();
@@ -62,6 +119,172 @@ class DashboardMetrics
             ->take(5)
             ->get();
 
+        [$announcements, $announcementFeed] = static::fetchAnnouncements();
+
+        $systemInsights = [
+            'student_teacher_ratio' => $stats['teachers'] > 0 ? round($stats['students'] / $stats['teachers'], 1) : null,
+            'students_per_class' => $stats['classes'] > 0 ? round($stats['students'] / $stats['classes'], 1) : null,
+            'parents' => $stats['parents'],
+        ];
+
+        $stats['attendance'] = $attendanceSummary['percentage'];
+
+        return [
+            'role' => 'admin',
+            'stats' => $stats,
+            'attendanceSummary' => $attendanceSummary,
+            'studentGrowth' => $studentGrowth,
+            'attendanceTrend' => $attendanceTrend,
+            'studentTrend' => $studentTrend,
+            'topClasses' => $topClasses,
+            'upcomingExams' => $upcomingExams,
+            'recentUsers' => $recentUsers,
+            'systemInsights' => $systemInsights,
+            'announcements' => $announcements,
+            'announcementFeed' => $announcementFeed,
+        ];
+    }
+
+    /**
+     * Build metrics tailored for teachers.
+     */
+    protected static function buildForTeacher(User $user): array
+    {
+        $now = Carbon::now();
+        $today = $now->copy()->startOfDay();
+        $rangeStart = $now->copy()->subDays(6)->startOfDay();
+
+        $classes = $user->teachingClassrooms()
+            ->withCount('students')
+            ->with('homeroomTeacher')
+            ->get();
+
+        $classroomIds = $classes->pluck('id')->all();
+        $studentsCount = max($classes->sum('students_count'), 0);
+
+        $attendanceRecords = AttendanceRecord::where('recorded_by', $user->id)
+            ->whereBetween('attendance_date', [$rangeStart, $now->copy()->endOfDay()])
+            ->get();
+
+        $todayAttendance = $attendanceRecords->filter(fn ($record) => $record->attendance_date->isSameDay($today));
+        $attendanceSummary = static::buildAttendanceSummary($todayAttendance, max($studentsCount, $todayAttendance->count()));
+        $attendanceTrend = static::buildAttendanceTrend($now, $attendanceRecords);
+
+        $upcomingExams = ExamSchedule::with(['subject', 'classroom'])
+            ->whereDate('exam_date', '>=', $today)
+            ->where(function ($query) use ($user, $classroomIds) {
+                $query->where('supervisor_id', $user->id);
+
+                if (! empty($classroomIds)) {
+                    $query->orWhereIn('classroom_id', $classroomIds);
+                }
+            })
+            ->orderBy('exam_date')
+            ->take(5)
+            ->get();
+
+        $recentAttendance = AttendanceRecord::with('classroom')
+            ->where('recorded_by', $user->id)
+            ->orderByDesc('attendance_date')
+            ->take(10)
+            ->get();
+
+        [$announcements, $announcementFeed] = static::fetchAnnouncements();
+
+        return [
+            'role' => 'teacher',
+            'stats' => [
+                'classes' => $classes->count(),
+                'students' => $studentsCount,
+                'subjects' => $user->teachingSubjects()->count(),
+                'attendance' => $attendanceSummary['percentage'],
+            ],
+            'attendanceSummary' => $attendanceSummary,
+            'studentTrend' => ['change' => null],
+            'attendanceTrend' => $attendanceTrend,
+            'studentGrowth' => collect(),
+            'teacherClasses' => $classes,
+            'upcomingExams' => $upcomingExams,
+            'recentAttendance' => $recentAttendance,
+            'recentUsers' => collect(),
+            'systemInsights' => [],
+            'announcements' => $announcements,
+            'announcementFeed' => $announcementFeed,
+        ];
+    }
+
+    /**
+     * Build metrics tailored for students.
+     */
+    protected static function buildForStudent(User $user): array
+    {
+        $now = Carbon::now();
+        $today = $now->copy()->startOfDay();
+        $trendStart = $now->copy()->subDays(6)->startOfDay();
+        $summaryStart = $now->copy()->subDays(29)->startOfDay();
+
+        $classrooms = $user->studentClassrooms()
+            ->with(['homeroomTeacher', 'subjects'])
+            ->get();
+
+        $classroomIds = $classrooms->pluck('id')->all();
+
+        $trendAttendance = AttendanceRecord::where('student_id', $user->id)
+            ->whereBetween('attendance_date', [$trendStart, $now->copy()->endOfDay()])
+            ->get();
+
+        $summaryAttendance = AttendanceRecord::where('student_id', $user->id)
+            ->whereBetween('attendance_date', [$summaryStart, $now->copy()->endOfDay()])
+            ->get();
+
+        $attendanceSummary = static::buildAttendanceSummary($summaryAttendance, max($summaryAttendance->count(), 1));
+        $attendanceTrend = static::buildAttendanceTrend($now, $trendAttendance);
+
+        $upcomingExams = ExamSchedule::with(['subject', 'classroom'])
+            ->whereDate('exam_date', '>=', $today)
+            ->when(! empty($classroomIds), fn ($query) => $query->whereIn('classroom_id', $classroomIds))
+            ->orderBy('exam_date')
+            ->take(5)
+            ->get();
+
+        $recentGrades = GradeRecord::with(['subject', 'classroom'])
+            ->where('student_id', $user->id)
+            ->orderByDesc('created_at')
+            ->take(6)
+            ->get();
+
+        $averageGrade = $recentGrades->filter(fn (GradeRecord $grade) => $grade->max_score > 0)
+            ->avg(fn (GradeRecord $grade) => $grade->score_percentage);
+
+        [$announcements, $announcementFeed] = static::fetchAnnouncements();
+
+        return [
+            'role' => 'student',
+            'stats' => [
+                'classes' => $classrooms->count(),
+                'attendance' => $attendanceSummary['percentage'],
+                'upcoming_exams' => $upcomingExams->count(),
+                'average_grade' => $averageGrade ? round($averageGrade, 1) : null,
+            ],
+            'attendanceSummary' => $attendanceSummary,
+            'studentTrend' => ['change' => null],
+            'attendanceTrend' => $attendanceTrend,
+            'studentGrowth' => collect(),
+            'studentClassrooms' => $classrooms,
+            'upcomingExams' => $upcomingExams,
+            'recentGrades' => $recentGrades,
+            'recentUsers' => collect(),
+            'systemInsights' => [],
+            'announcements' => $announcements,
+            'announcementFeed' => $announcementFeed,
+        ];
+    }
+
+    /**
+     * Fetch announcements and the prepared feed payload.
+     */
+    protected static function fetchAnnouncements(): array
+    {
         $announcements = Announcement::query()
             ->active()
             ->orderByDesc('published_at')
@@ -78,47 +301,7 @@ class DashboardMetrics
                 ->get();
         }
 
-        $announcementFeed = static::formatAnnouncements($announcements);
-
-        $systemInsights = [
-            'student_teacher_ratio' => $stats['teachers'] > 0 ? round($stats['students'] / $stats['teachers'], 1) : null,
-            'students_per_class' => $stats['classes'] > 0 ? round($stats['students'] / $stats['classes'], 1) : null,
-            'parents' => $stats['parents'],
-        ];
-
-        $stats['attendance'] = $attendanceSummary['percentage'];
-
-        return [
-            'stats' => $stats,
-            'attendanceSummary' => $attendanceSummary,
-            'studentGrowth' => $studentGrowth,
-            'attendanceTrend' => $attendanceTrend,
-            'studentTrend' => $studentTrend,
-            'topClasses' => $topClasses,
-            'upcomingExams' => $upcomingExams,
-            'recentUsers' => $recentUsers,
-            'systemInsights' => $systemInsights,
-            'announcements' => $announcements,
-            'announcementFeed' => $announcementFeed,
-        ];
-    }
-
-    /**
-     * Prepare the headline stats.
-     */
-    protected static function buildStats(): array
-    {
-        return [
-            'students' => User::role('student')->count(),
-            'teachers' => User::role('teacher')->count(),
-            'parents' => User::role('parent')->count(),
-            'classes' => Classroom::count(),
-            'classrooms' => Classroom::count(),
-            'subjects' => Subject::count(),
-            'total_users' => User::count(),
-            'roles' => Role::count(),
-            'permissions' => Permission::count(),
-        ];
+        return [$announcements, static::formatAnnouncements($announcements)];
     }
 
     /**
