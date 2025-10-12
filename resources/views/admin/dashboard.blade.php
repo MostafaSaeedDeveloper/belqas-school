@@ -322,6 +322,59 @@
 
     <div class="engagement-card news-card">
         <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-bullhorn"></i> آخر الأخبار والإعلانات</h3>
+        </div>
+        <div class="news-list">
+            @forelse($announcements as $announcement)
+                <article class="news-item">
+                    <div class="news-date {{ $announcement->is_published ? '' : 'is-draft' }}">
+                        <span class="day">
+                            {{ $announcement->published_at ? $announcement->published_at->format('d') : 'مسودة' }}
+                        </span>
+                        <span class="month">
+                            {{ $announcement->published_at ? $announcement->published_at->translatedFormat('M') : 'لم تنشر' }}
+                        </span>
+                    </div>
+                    <div class="news-content">
+                        <h4>{{ $announcement->title }}</h4>
+                        <p>
+                            {{ $announcement->summary
+                                ? \Illuminate\Support\Str::limit($announcement->summary, 110)
+                                : \Illuminate\Support\Str::limit(strip_tags($announcement->content), 110) }}
+                        </p>
+                        <div class="news-meta">
+                            <span class="news-type {{ $announcement->type === 'news' ? 'is-news' : 'is-announcement' }}">
+                                <i class="fas {{ $announcement->type === 'news' ? 'fa-newspaper' : 'fa-bell' }}"></i>
+                                {{ $announcement->type === 'news' ? 'خبر' : 'إعلان' }}
+                            </span>
+                            <span class="news-time">
+                                {{ $announcement->is_published
+                                    ? $announcement->published_at?->diffForHumans()
+                                    : 'في وضع المسودة' }}
+                                @if($announcement->isExpired)
+                                    • <span class="text-warning">منتهي</span>
+                                @endif
+                            </span>
+                        </div>
+                    </div>
+                </article>
+            @empty
+                <div class="empty-state">
+                    <div class="empty-icon"><i class="fas fa-bullhorn"></i></div>
+                    <p>لم تتم إضافة أخبار أو إعلانات بعد.</p>
+                    <a href="{{ route('announcements.create') }}" class="btn btn-soft-primary btn-sm mt-2">
+                        <i class="fas fa-plus"></i>
+                        إنشاء أول رسالة
+                    </a>
+                </div>
+            @endforelse
+        </div>
+    </div>
+</section>
+
+<section class="insights-grid">
+    <div class="engagement-card">
+        <div class="card-header">
             <h3 class="card-title"><i class="fas fa-school"></i> الفصول الأعلى كثافة</h3>
         </div>
         <div class="news-list">

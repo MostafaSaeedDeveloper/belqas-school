@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
 use App\Support\DashboardMetrics;
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\DashboardController;
@@ -86,6 +87,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/attendance', [ReportController::class, 'attendance'])->name('attendance');
         Route::get('/financial', [ReportController::class, 'financial'])->name('financial');
     });
+
+    // Announcements Routes
+    Route::resource('announcements', AnnouncementController::class)->except(['show']);
 
     // Settings Routes
     Route::prefix('settings')->name('settings.')->group(function () {

@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Models\Announcement;
 use App\Models\AttendanceRecord;
 use App\Models\Classroom;
 use App\Models\ExamSchedule;
@@ -60,6 +61,13 @@ class DashboardMetrics
             ->take(5)
             ->get();
 
+        $announcements = Announcement::query()
+            ->active()
+            ->orderByDesc('published_at')
+            ->orderByDesc('created_at')
+            ->take(6)
+            ->get();
+
         $systemInsights = [
             'student_teacher_ratio' => $stats['teachers'] > 0 ? round($stats['students'] / $stats['teachers'], 1) : null,
             'students_per_class' => $stats['classes'] > 0 ? round($stats['students'] / $stats['classes'], 1) : null,
@@ -78,6 +86,7 @@ class DashboardMetrics
             'upcomingExams' => $upcomingExams,
             'recentUsers' => $recentUsers,
             'systemInsights' => $systemInsights,
+            'announcements' => $announcements,
         ];
     }
 
