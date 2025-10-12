@@ -266,71 +266,6 @@
             z-index: 1;
         }
 
-        .divider {
-            text-align: center;
-            margin: 30px 0;
-            position: relative;
-            color: #999;
-            font-size: 0.9rem;
-        }
-
-        .divider::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: #e1e5e9;
-            z-index: 1;
-        }
-
-        .divider span {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 0 20px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .demo-accounts {
-            background: #f8f9ff;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .demo-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .demo-list {
-            display: grid;
-            gap: 8px;
-            font-size: 0.85rem;
-        }
-
-        .demo-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 12px;
-            background: white;
-            border-radius: 8px;
-            border: 1px solid #e1e5e9;
-        }
-
-        .demo-username {
-            font-weight: 600;
-            color: #667eea;
-        }
-
-        .demo-role {
-            color: #666;
-        }
-
         .loading {
             display: none;
         }
@@ -395,10 +330,6 @@
                 flex-direction: column;
                 align-items: stretch;
                 gap: 10px;
-            }
-
-            .demo-list {
-                font-size: 0.8rem;
             }
         }
 
@@ -509,34 +440,6 @@
                     </button>
                 </form>
 
-                <div class="divider">
-                    <span>أو جرب الحسابات التجريبية</span>
-                </div>
-
-                <div class="demo-accounts">
-                    <div class="demo-title">حسابات تجريبية للاختبار</div>
-                    <div class="demo-list">
-                        <div class="demo-item">
-                            <span class="demo-username">admin</span>
-                            <span class="demo-role">مدير عام</span>
-                        </div>
-                        <div class="demo-item">
-                            <span class="demo-username">principal</span>
-                            <span class="demo-role">مدير المدرسة</span>
-                        </div>
-                        <div class="demo-item">
-                            <span class="demo-username">teacher</span>
-                            <span class="demo-role">معلم</span>
-                        </div>
-                        <div class="demo-item">
-                            <span class="demo-username">student</span>
-                            <span class="demo-role">طالب</span>
-                        </div>
-                    </div>
-                    <div style="text-align: center; margin-top: 10px; font-size: 0.8rem; color: #666;">
-                        كلمة المرور للجميع: <strong>123456789</strong>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -551,23 +454,6 @@
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             const btn = document.getElementById('loginBtn');
             btn.classList.add('loading');
-        });
-
-        // Demo account quick login
-        document.querySelectorAll('.demo-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const username = this.querySelector('.demo-username').textContent;
-                document.getElementById('username').value = username;
-                document.getElementById('password').value = '123456789';
-
-                // Add visual feedback
-                this.style.background = '#667eea';
-                this.style.color = 'white';
-                setTimeout(() => {
-                    this.style.background = 'white';
-                    this.style.color = '';
-                }, 200);
-            });
         });
 
         // Enhanced form interactions
