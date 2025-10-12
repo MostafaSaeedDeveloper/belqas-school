@@ -14,6 +14,7 @@
         <div class="search-field">
             <i class="fas fa-search"></i>
             <input type="text" class="search-input" placeholder="البحث السريع داخل النظام">
+            <div class="search-suggestions" data-search-results hidden></div>
         </div>
 
         @php

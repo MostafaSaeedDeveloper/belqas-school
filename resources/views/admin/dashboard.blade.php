@@ -12,27 +12,51 @@
 @endsection
 
 @section('content')
+@php
+    $studentChange = $studentTrend['change'];
+    $attendancePercentage = $attendanceSummary['percentage'];
+    $studentsPerClass = $systemInsights['students_per_class'] ?? null;
+    $studentTeacherRatio = $systemInsights['student_teacher_ratio'] ?? null;
+@endphp
+
 <div class="dashboard-hero">
     <div class="hero-content">
         <div class="hero-label">لوحة المتابعة اللحظية</div>
         <h2 class="hero-title">مرحباً بك في لوحة التحكم</h2>
-        <p class="hero-subtitle">تتبع المؤشرات الأساسية، أدر العمليات اليومية، واطلع على كل ما يحدث في المدرسة من مكان واحد.</p>
+        <p class="hero-subtitle">
+            لديك {{ number_format($stats['students']) }} طالباً و {{ number_format($stats['teachers']) }} معلمًا مسجلاً في النظام هذا العام.
+        </p>
 
         <div class="hero-insights">
             <div class="hero-insight">
                 <span class="insight-label">الطلاب النشطون</span>
-                <span class="insight-value" data-stat="students">0</span>
-                <span class="insight-change positive"><i class="fas fa-arrow-trend-up"></i> +12%</span>
+                <span class="insight-value" data-stat="students">{{ number_format($stats['students']) }}</span>
+                @if(! is_null($studentChange))
+                    <span class="insight-change {{ $studentChange >= 0 ? 'positive' : 'negative' }}">
+                        <i class="fas fa-arrow-{{ $studentChange >= 0 ? 'trend-up' : 'trend-down' }}"></i>
+                        {{ $studentChange >= 0 ? '+' : '' }}{{ $studentChange }}% مقارنة بالشهر الماضي
+                    </span>
+                @else
+                    <span class="insight-change neutral"><i class="fas fa-circle"></i> بيانات شهرية قيد التجميع</span>
+                @endif
             </div>
             <div class="hero-insight">
                 <span class="insight-label">الحضور اليوم</span>
-                <span class="insight-value" data-stat="attendance">0%</span>
-                <span class="insight-change neutral"><i class="fas fa-circle"></i> مستقر</span>
+                <span class="insight-value" data-stat="attendance" data-attendance-percentage>
+                    {{ ! is_null($attendancePercentage) ? $attendancePercentage . '%' : '—' }}
+                </span>
+                <span class="insight-change {{ ! is_null($attendancePercentage) && $attendancePercentage >= 90 ? 'positive' : 'warning' }}">
+                    <i class="fas fa-calendar-check"></i>
+                    {{ number_format($attendanceSummary['total_marked']) }} سجل مكتمل اليوم
+                </span>
             </div>
             <div class="hero-insight">
-                <span class="insight-label">الرسائل الجديدة</span>
-                <span class="insight-value">8</span>
-                <span class="insight-change positive"><i class="fas fa-envelope-open-text"></i> تمت المتابعة</span>
+                <span class="insight-label">الفصول النشطة</span>
+                <span class="insight-value" data-stat="classes">{{ number_format($stats['classes']) }}</span>
+                <span class="insight-change neutral">
+                    <i class="fas fa-users"></i>
+                    {{ $studentsPerClass ? 'متوسط ' . $studentsPerClass . ' طلاب لكل فصل' : 'بانتظار توزيع الطلاب' }}
+                </span>
             </div>
         </div>
 
@@ -50,19 +74,23 @@
 
     <div class="hero-widget">
         <div class="widget-header">
-            <span class="widget-title">مؤشر الإنجاز العام</span>
-            <span class="widget-date">تحديث: {{ \Carbon\Carbon::now()->translatedFormat('j F Y') }}</span>
+            <span class="widget-title">متابعة الحضور اليومي</span>
+            <span class="widget-date">تحديث: {{ now()->translatedFormat('j F Y - H:i') }}</span>
         </div>
         <div class="widget-progress">
-            <span class="progress-value">82%</span>
+            <span class="progress-value" data-attendance-percentage>
+                {{ ! is_null($attendancePercentage) ? $attendancePercentage . '%' : 'لا توجد سجلات' }}
+            </span>
             <div class="progress-bar">
-                <span style="width: 82%"></span>
+                <span data-attendance-progress style="width: {{ ! is_null($attendancePercentage) ? min($attendancePercentage, 100) : 0 }}%"></span>
             </div>
         </div>
         <ul class="widget-meta">
-            <li><span>الخطط الأكاديمية</span><strong>مكتملة بنسبة 76%</strong></li>
-            <li><span>الطلبات المعلقة</span><strong>5 بحاجة للمتابعة</strong></li>
-            <li><span>الدعم الفني</span><strong>رد خلال 1 ساعة</strong></li>
+            <li><span>حاضر</span><strong data-attendance="present">{{ number_format($attendanceSummary['present']) }}</strong></li>
+            <li><span>غائب</span><strong data-attendance="absent">{{ number_format($attendanceSummary['absent']) }}</strong></li>
+            <li><span>متأخر</span><strong data-attendance="late">{{ number_format($attendanceSummary['late']) }}</strong></li>
+            <li><span>إذن مسبق</span><strong data-attendance="excused">{{ number_format($attendanceSummary['excused']) }}</strong></li>
+            <li><span>بانتظار التسجيل</span><strong data-attendance="unmarked">{{ number_format($attendanceSummary['unmarked']) }}</strong></li>
         </ul>
     </div>
 </div>
@@ -72,8 +100,11 @@
         <div class="metric-icon"><i class="fas fa-user-graduate"></i></div>
         <div class="metric-content">
             <span class="metric-label">إجمالي الطلاب</span>
-            <div class="metric-value" data-stat="students">0</div>
-            <div class="metric-trend positive"><i class="fas fa-arrow-up"></i> +12% من الشهر الماضي</div>
+            <div class="metric-value" data-stat="students">{{ number_format($stats['students']) }}</div>
+            <div class="metric-trend {{ $studentChange >= 0 ? 'positive' : 'negative' }}">
+                <i class="fas fa-arrow-{{ $studentChange >= 0 ? 'up' : 'down' }}"></i>
+                {{ $studentChange !== null ? ($studentChange >= 0 ? '+' : '') . $studentChange . '%' : 'بيانات شهرية قيد التحديث' }}
+            </div>
         </div>
     </article>
 
@@ -81,8 +112,11 @@
         <div class="metric-icon"><i class="fas fa-chalkboard-user"></i></div>
         <div class="metric-content">
             <span class="metric-label">عدد المعلمين</span>
-            <div class="metric-value" data-stat="teachers">0</div>
-            <div class="metric-trend positive"><i class="fas fa-user-plus"></i> +3 معلمين جدد</div>
+            <div class="metric-value" data-stat="teachers">{{ number_format($stats['teachers']) }}</div>
+            <div class="metric-trend positive">
+                <i class="fas fa-user-check"></i>
+                {{ $studentTeacherRatio ? $studentTeacherRatio . ' طالب لكل معلم' : 'لا يوجد توزيع بعد' }}
+            </div>
         </div>
     </article>
 
@@ -90,8 +124,8 @@
         <div class="metric-icon"><i class="fas fa-school"></i></div>
         <div class="metric-content">
             <span class="metric-label">الفصول النشطة</span>
-            <div class="metric-value" data-stat="classes">0</div>
-            <div class="metric-trend neutral"><i class="fas fa-circle-notch"></i> بدون تغييرات</div>
+            <div class="metric-value" data-stat="classes">{{ number_format($stats['classes']) }}</div>
+            <div class="metric-trend neutral"><i class="fas fa-circle-notch"></i> {{ $stats['subjects'] }} مادة دراسية</div>
         </div>
     </article>
 
@@ -99,8 +133,11 @@
         <div class="metric-icon"><i class="fas fa-calendar-check"></i></div>
         <div class="metric-content">
             <span class="metric-label">نسبة الحضور</span>
-            <div class="metric-value" data-stat="attendance">0%</div>
-            <div class="metric-trend positive"><i class="fas fa-arrow-trend-up"></i> +2% هذا الأسبوع</div>
+            <div class="metric-value" data-stat="attendance">{{ ! is_null($attendancePercentage) ? $attendancePercentage . '%' : '—' }}</div>
+            <div class="metric-trend {{ ! is_null($attendancePercentage) && $attendancePercentage >= 90 ? 'positive' : 'warning' }}">
+                <i class="fas fa-clock"></i>
+                آخر تحديث {{ now()->diffForHumans() }}
+            </div>
         </div>
     </article>
 </section>
@@ -111,22 +148,38 @@
             <div class="analytics-header">
                 <div>
                     <h3 class="analytics-title">نمو أعداد الطلاب</h3>
-                    <span class="analytics-subtitle">متوسط التسجيل خلال آخر 6 أشهر</span>
+                    <span class="analytics-subtitle">آخر ستة أشهر</span>
                 </div>
-                <button class="icon-btn icon-btn-light"><i class="fas fa-arrow-rotate-right"></i></button>
             </div>
-            <div class="analytics-body" id="students-chart"></div>
+            <div class="analytics-body">
+                <ul class="analytics-list" data-student-growth>
+                    @foreach($studentGrowth as $item)
+                        <li>
+                            <span>{{ $item['label'] }}</span>
+                            <strong>{{ number_format($item['count']) }}</strong>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
         </div>
 
         <div class="analytics-card">
             <div class="analytics-header">
                 <div>
                     <h3 class="analytics-title">معدل الحضور الأسبوعي</h3>
-                    <span class="analytics-subtitle">إحصاءات الانضباط للمدارس</span>
+                    <span class="analytics-subtitle">آخر سبعة أيام</span>
                 </div>
-                <button class="icon-btn icon-btn-light"><i class="fas fa-ellipsis"></i></button>
             </div>
-            <div class="analytics-body" id="attendance-chart"></div>
+            <div class="analytics-body">
+                <ul class="analytics-list" data-attendance-trend>
+                    @foreach($attendanceTrend as $item)
+                        <li>
+                            <span>{{ $item['label'] }}</span>
+                            <strong>{{ ! is_null($item['percentage']) ? $item['percentage'] . '%' : '—' }}</strong>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
         </div>
     </div>
 
@@ -170,25 +223,27 @@
             </div>
             <ul class="status-list">
                 <li>
-                    <span>رضا أولياء الأمور</span>
+                    <span>نسبة الحضور اليوم</span>
                     <div class="status-meter">
-                        <span style="width: 68%"></span>
+                        <span class="{{ ! is_null($attendancePercentage) && $attendancePercentage >= 90 ? 'positive' : 'warning' }}" data-attendance-progress style="width: {{ ! is_null($attendancePercentage) ? min($attendancePercentage, 100) : 0 }}%"></span>
                     </div>
-                    <strong>68%</strong>
+                    <strong data-attendance-percentage>{{ ! is_null($attendancePercentage) ? $attendancePercentage . '%' : '—' }}</strong>
                 </li>
                 <li>
-                    <span>الإنجاز الأكاديمي</span>
+                    <span>متوسط الطلاب لكل معلم</span>
+                    @php $ratioPercent = $studentTeacherRatio ? min(($studentTeacherRatio / 25) * 100, 100) : 0; @endphp
                     <div class="status-meter">
-                        <span class="positive" style="width: 84%"></span>
+                        <span style="width: {{ $ratioPercent }}%"></span>
                     </div>
-                    <strong>+6%</strong>
+                    <strong>{{ $studentTeacherRatio ? $studentTeacherRatio . ' طالب' : 'لا توجد بيانات' }}</strong>
                 </li>
                 <li>
-                    <span>الأنشطة اللاصفية</span>
+                    <span>أولياء الأمور المسجلون</span>
+                    @php $parentsPercent = $stats['students'] > 0 ? min(($stats['parents'] / max($stats['students'], 1)) * 100, 100) : 0; @endphp
                     <div class="status-meter">
-                        <span class="warning" style="width: 44%"></span>
+                        <span class="positive" style="width: {{ $parentsPercent }}%"></span>
                     </div>
-                    <strong>بحاجة لدعم</strong>
+                    <strong>{{ number_format($stats['parents']) }} ولي أمر</strong>
                 </li>
             </ul>
         </div>
@@ -201,77 +256,95 @@
             <h3 class="card-title"><i class="fas fa-history"></i> النشاط الأخير</h3>
         </div>
         <div class="activity-timeline activity-list">
-            <!-- Activities will be loaded by JavaScript -->
+            @forelse($recentUsers as $user)
+                <div class="activity-item">
+                    <div class="activity-item-header">
+                        <strong>{{ $user->name }}</strong>
+                        <span class="activity-role">{{ $user->getRoleNames()->first() ?? 'مستخدم' }}</span>
+                    </div>
+                    <span class="activity-time">{{ $user->created_at->diffForHumans() }}</span>
+                </div>
+            @empty
+                <div class="empty-state">
+                    <div class="empty-icon"><i class="fas fa-inbox"></i></div>
+                    <p>لم يتم تسجيل نشاطات جديدة مؤخراً.</p>
+                </div>
+            @endforelse
         </div>
         <div class="card-footer text-center">
-            <a href="{{ route('activity.index') }}" class="btn btn-soft-primary">
-                <i class="fas fa-eye"></i>
-                عرض جميع الأنشطة
+            <a href="{{ route('users.index') }}" class="btn btn-soft-primary">
+                <i class="fas fa-users"></i>
+                إدارة المستخدمين
             </a>
         </div>
     </div>
 
     <div class="engagement-card">
         <div class="card-header">
-            <h3 class="card-title"><i class="fas fa-calendar-days"></i> التقويم</h3>
+            <h3 class="card-title"><i class="fas fa-calendar-days"></i> الامتحانات القادمة</h3>
         </div>
         <div class="calendar" data-calendar>
             <div class="calendar-header">
-                <button class="icon-btn icon-btn-light calendar-prev" aria-label="الشهر السابق">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-                <div class="calendar-month">سبتمبر 2025</div>
-                <button class="icon-btn icon-btn-light calendar-next" aria-label="الشهر التالي">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
+                <div class="calendar-month">{{ now()->translatedFormat('F Y') }}</div>
             </div>
-            <div class="calendar-grid">
-                <!-- Calendar will be rendered by JavaScript -->
+            <div class="calendar-events">
+                @forelse($upcomingExams as $exam)
+                    <div class="calendar-event">
+                        <div class="calendar-event-date">
+                            <span class="day">{{ optional($exam->exam_date)->format('d') }}</span>
+                            <span class="month">{{ optional($exam->exam_date)->translatedFormat('M') }}</span>
+                        </div>
+                        <div class="calendar-event-content">
+                            <h4>{{ $exam->title ?? $exam->subject?->name ?? 'امتحان' }}</h4>
+                            <p>
+                                {{ $exam->classroom?->name ?? 'بدون فصل محدد' }}
+                                @if($exam->exam_date)
+                                    • {{ $exam->exam_date->translatedFormat('l g:i A') }}
+                                @endif
+                            </p>
+                        </div>
+                    </div>
+                @empty
+                    <div class="empty-state">
+                        <div class="empty-icon"><i class="fas fa-calendar-minus"></i></div>
+                        <p>لا توجد امتحانات قادمة حالياً.</p>
+                    </div>
+                @endforelse
             </div>
         </div>
         <div class="card-footer text-center">
-            <a href="{{ route('events.index') }}" class="btn btn-soft-primary btn-sm">
+            <a href="{{ route('exams.index') }}" class="btn btn-soft-primary btn-sm">
                 <i class="fas fa-calendar-alt"></i>
-                جميع الأحداث
+                جميع الامتحانات
             </a>
         </div>
     </div>
 
     <div class="engagement-card news-card">
         <div class="card-header">
-            <h3 class="card-title"><i class="fas fa-newspaper"></i> آخر الأخبار والإعلانات</h3>
+            <h3 class="card-title"><i class="fas fa-school"></i> الفصول الأعلى كثافة</h3>
         </div>
         <div class="news-list">
-            <article class="news-item">
-                <div class="news-date">
-                    <span class="day">15</span>
-                    <span class="month">سبتمبر</span>
+            @forelse($topClasses as $classroom)
+                <article class="news-item">
+                    <div class="news-date">
+                        <span class="day">{{ number_format($classroom->students_count) }}</span>
+                        <span class="month">طالب</span>
+                    </div>
+                    <div class="news-content">
+                        <h4>{{ $classroom->name }}</h4>
+                        <p>
+                            {{ $classroom->grade_level ? 'الصف ' . $classroom->grade_level : 'المستوى غير محدد' }}
+                            • المعلم: {{ optional($classroom->homeroomTeacher)->name ?? 'غير محدد' }}
+                        </p>
+                    </div>
+                </article>
+            @empty
+                <div class="empty-state">
+                    <div class="empty-icon"><i class="fas fa-school"></i></div>
+                    <p>لا توجد بيانات فصول بعد، ابدأ بإضافة الفصول والطلاب.</p>
                 </div>
-                <div class="news-content">
-                    <h4>بداية العام الدراسي الجديد</h4>
-                    <p>يسر إدارة المدرسة أن تعلن عن بداية العام الدراسي الجديد 2025/2026.</p>
-                </div>
-            </article>
-            <article class="news-item">
-                <div class="news-date">
-                    <span class="day">12</span>
-                    <span class="month">سبتمبر</span>
-                </div>
-                <div class="news-content">
-                    <h4>اجتماع أولياء الأمور</h4>
-                    <p>اجتماع عام لأولياء الأمور يوم الخميس الساعة 10 صباحاً في القاعة الكبرى.</p>
-                </div>
-            </article>
-            <article class="news-item">
-                <div class="news-date">
-                    <span class="day">10</span>
-                    <span class="month">سبتمبر</span>
-                </div>
-                <div class="news-content">
-                    <h4>ورشة تدريبية للمعلمين</h4>
-                    <p>ورشة حول استخدام التكنولوجيا في التعليم الحديث لجميع الكوادر التعليمية.</p>
-                </div>
-            </article>
+            @endforelse
         </div>
     </div>
 </section>
@@ -279,7 +352,6 @@
 
 @push('styles')
 <style>
-    /* إضافات بسيطة خاصة بالصفحة */
     .btn-soft-primary {
         background: rgba(37, 99, 235, 0.12);
         color: #1d4ed8;
@@ -293,13 +365,138 @@
         background: rgba(37, 99, 235, 0.2);
         color: #1d4ed8;
     }
+
+    .analytics-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .analytics-list li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 1rem;
+        border-radius: 14px;
+        background: rgba(248, 250, 252, 0.9);
+        border: 1px solid rgba(226, 232, 240, 0.6);
+        color: #0f172a;
+        font-weight: 600;
+    }
+
+    .analytics-list li strong {
+        color: #2563eb;
+    }
+
+    .calendar-events {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .calendar-event {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        padding: 0.9rem 1.1rem;
+        border-radius: 18px;
+        background: rgba(248, 250, 252, 0.95);
+        border: 1px solid rgba(226, 232, 240, 0.6);
+    }
+
+    .calendar-event-date {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #2563eb, #60a5fa);
+        color: #fff;
+        font-weight: 700;
+    }
+
+    .calendar-event-date .day {
+        font-size: 1.25rem;
+        line-height: 1.2;
+    }
+
+    .calendar-event-date .month {
+        font-size: 0.8rem;
+    }
+
+    .calendar-event-content h4 {
+        margin: 0;
+        font-size: 1rem;
+        color: #0f172a;
+        font-weight: 700;
+    }
+
+    .calendar-event-content p {
+        margin: 0.25rem 0 0;
+        color: #475569;
+        font-size: 0.9rem;
+    }
+
+    .activity-item-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 0.35rem;
+    }
+
+    .activity-role {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
+        background: rgba(37, 99, 235, 0.12);
+        color: #1d4ed8;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .activity-time {
+        display: block;
+        font-size: 0.85rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    @media (max-width: 992px) {
+        .analytics-list li {
+            padding: 0.75rem;
+        }
+
+        .calendar-event {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .calendar-event-date {
+            width: 100%;
+            flex-direction: row;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+    }
 </style>
 @endpush
 
-@push('scripts')
+@push('inline-scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('واجهة لوحة التحكم الجديدة جاهزة');
-    });
+    window.dashboardBootstrap = @json([
+        'stats' => $stats,
+        'attendanceSummary' => $attendanceSummary,
+        'studentTrend' => $studentTrend,
+        'attendanceTrend' => $attendanceTrend->toArray(),
+        'studentGrowth' => $studentGrowth->toArray(),
+    ]);
 </script>
 @endpush
