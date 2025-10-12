@@ -491,12 +491,12 @@
 
 @push('inline-scripts')
 <script>
-    window.dashboardBootstrap = @json([
+    window.dashboardBootstrap = {!! json_encode([
         'stats' => $stats,
         'attendanceSummary' => $attendanceSummary,
         'studentTrend' => $studentTrend,
         'attendanceTrend' => $attendanceTrend->toArray(),
         'studentGrowth' => $studentGrowth->toArray(),
-    ]);
+    ]) !!};
 </script>
 @endpush
