@@ -10,6 +10,7 @@ use App\Models\Subject;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -68,6 +69,17 @@ class DashboardMetrics
             ->take(6)
             ->get();
 
+        if ($announcements->isEmpty()) {
+            $announcements = Announcement::query()
+                ->orderByDesc('is_published')
+                ->orderByDesc('published_at')
+                ->orderByDesc('created_at')
+                ->take(6)
+                ->get();
+        }
+
+        $announcementFeed = static::formatAnnouncements($announcements);
+
         $systemInsights = [
             'student_teacher_ratio' => $stats['teachers'] > 0 ? round($stats['students'] / $stats['teachers'], 1) : null,
             'students_per_class' => $stats['classes'] > 0 ? round($stats['students'] / $stats['classes'], 1) : null,
@@ -87,6 +99,7 @@ class DashboardMetrics
             'recentUsers' => $recentUsers,
             'systemInsights' => $systemInsights,
             'announcements' => $announcements,
+            'announcementFeed' => $announcementFeed,
         ];
     }
 
@@ -176,5 +189,33 @@ class DashboardMetrics
                 'percentage' => $total > 0 ? round(($present / $total) * 100, 1) : null,
             ];
         });
+    }
+
+    /**
+     * Prepare announcement feed payloads for the dashboard widgets.
+     */
+    protected static function formatAnnouncements(Collection $announcements): array
+    {
+        return $announcements->map(function (Announcement $announcement) {
+            $publishedAt = $announcement->published_at;
+            $summaryText = $announcement->summary ?? strip_tags($announcement->content);
+            $summary = Str::limit($summaryText, 110);
+
+            return [
+                'id' => $announcement->id,
+                'title' => $announcement->title,
+                'summary' => $summary,
+                'type' => $announcement->type,
+                'type_label' => $announcement->type === 'news' ? 'خبر' : 'إعلان',
+                'type_icon' => $announcement->type === 'news' ? 'fa-newspaper' : 'fa-bell',
+                'is_published' => (bool) $announcement->is_published,
+                'is_expired' => (bool) $announcement->isExpired,
+                'published_human' => $announcement->is_published
+                    ? optional($publishedAt)->diffForHumans()
+                    : 'في وضع المسودة',
+                'day' => $publishedAt ? $publishedAt->format('d') : 'مسودة',
+                'month' => $publishedAt ? $publishedAt->translatedFormat('M') : 'لم تنشر',
+            ];
+        })->values()->all();
     }
 }

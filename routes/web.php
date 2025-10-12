@@ -134,6 +134,7 @@ Route::middleware(['auth'])->prefix('api')->name('api.')->group(function () {
             'studentTrend' => $metrics['studentTrend'],
             'attendanceTrend' => $metrics['attendanceTrend']->values()->toArray(),
             'studentGrowth' => $metrics['studentGrowth']->values()->toArray(),
+            'announcements' => $metrics['announcementFeed'],
         ]);
     })->name('dashboard.stats');
 

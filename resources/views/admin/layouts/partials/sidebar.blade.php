@@ -175,14 +175,14 @@
                 </li>
                 @endcan
 
-                @if(auth()->user()->can('manage_announcements') || auth()->user()->can('view_announcements') || auth()->user()->hasRole('admin') || auth()->user()->hasRole('super-admin'))
+                @canany(['manage_announcements', 'view_announcements', 'view_dashboard'])
                 <li class="nav-item">
                     <a href="{{ route('announcements.index') }}" class="nav-link {{ request()->routeIs('announcements.*') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="fas fa-bullhorn"></i></span>
                         <span class="nav-text">الأخبار والإعلانات</span>
                     </a>
                 </li>
-                @endif
+                @endcanany
 
                 @can('view_settings')
                 <li class="nav-item has-submenu {{ request()->routeIs('settings.*') || request()->routeIs('users.*') ? 'menu-open' : '' }}">

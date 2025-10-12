@@ -324,7 +324,7 @@
         <div class="card-header">
             <h3 class="card-title"><i class="fas fa-bullhorn"></i> آخر الأخبار والإعلانات</h3>
         </div>
-        <div class="news-list">
+        <div class="news-list" data-announcements data-create-url="{{ route('announcements.create') }}">
             @forelse($announcements as $announcement)
                 <article class="news-item">
                     <div class="news-date {{ $announcement->is_published ? '' : 'is-draft' }}">
@@ -359,7 +359,7 @@
                     </div>
                 </article>
             @empty
-                <div class="empty-state">
+                <div class="empty-state" data-announcements-empty>
                     <div class="empty-icon"><i class="fas fa-bullhorn"></i></div>
                     <p>لم تتم إضافة أخبار أو إعلانات بعد.</p>
                     <a href="{{ route('announcements.create') }}" class="btn btn-soft-primary btn-sm mt-2">
@@ -550,6 +550,7 @@
         'studentTrend' => $studentTrend,
         'attendanceTrend' => $attendanceTrend->toArray(),
         'studentGrowth' => $studentGrowth->toArray(),
+        'announcements' => $announcementFeed,
     ]) !!};
 </script>
 @endpush

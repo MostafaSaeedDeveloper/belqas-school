@@ -6,6 +6,7 @@ class Dashboard {
             studentTrend: {},
             attendanceTrend: [],
             studentGrowth: [],
+            announcements: [],
         };
 
         this.statElements = document.querySelectorAll('[data-stat]');
@@ -16,6 +17,8 @@ class Dashboard {
         this.attendancePercentageElements = document.querySelectorAll('[data-attendance-percentage]');
         this.attendanceProgressBars = document.querySelectorAll('[data-attendance-progress]');
         this.attendanceValueElements = document.querySelectorAll('[data-attendance]');
+        this.announcementList = document.querySelector('[data-announcements]');
+        this.announcementCreateUrl = this.announcementList?.dataset?.createUrl || '/announcements/create';
 
         this.debounceTimer = null;
         this.refreshInterval = null;
@@ -44,6 +47,7 @@ class Dashboard {
         this.updateAttendanceSummary(this.state.attendanceSummary);
         this.renderAttendanceTrend(this.state.attendanceTrend);
         this.renderStudentGrowth(this.state.studentGrowth);
+        this.renderAnnouncements(this.state.announcements);
     }
 
     bindEvents() {
@@ -98,6 +102,7 @@ class Dashboard {
             this.updateAttendanceSummary(data.attendanceSummary || {});
             this.renderAttendanceTrend(data.attendanceTrend || []);
             this.renderStudentGrowth(data.studentGrowth || []);
+            this.renderAnnouncements(data.announcements || []);
         } catch (error) {
             console.warn('فشل تحميل بيانات لوحة التحكم', error);
         }
@@ -188,6 +193,108 @@ class Dashboard {
             const li = document.createElement('li');
             li.innerHTML = `<span>${item.label}</span><strong>${this.formatNumber(item.count)}</strong>`;
             this.studentGrowthList.appendChild(li);
+        });
+    }
+
+    renderAnnouncements(items) {
+        if (!this.announcementList) {
+            return;
+        }
+
+        const list = Array.isArray(items) ? items : [];
+        this.announcementList.innerHTML = '';
+
+        if (list.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'empty-state';
+
+            const icon = document.createElement('div');
+            icon.className = 'empty-icon';
+            const iconInner = document.createElement('i');
+            iconInner.className = 'fas fa-bullhorn';
+            icon.appendChild(iconInner);
+            empty.appendChild(icon);
+
+            const message = document.createElement('p');
+            message.textContent = 'لم تتم إضافة أخبار أو إعلانات بعد.';
+            empty.appendChild(message);
+
+            const action = document.createElement('a');
+            action.className = 'btn btn-soft-primary btn-sm mt-2';
+            action.href = this.announcementCreateUrl;
+
+            const actionIcon = document.createElement('i');
+            actionIcon.className = 'fas fa-plus';
+            action.appendChild(actionIcon);
+            action.appendChild(document.createTextNode(' إنشاء أول رسالة'));
+            empty.appendChild(action);
+
+            this.announcementList.appendChild(empty);
+            return;
+        }
+
+        list.forEach((item) => {
+            const article = document.createElement('article');
+            article.className = 'news-item';
+
+            const date = document.createElement('div');
+            date.className = 'news-date';
+            if (!item.is_published) {
+                date.classList.add('is-draft');
+            }
+
+            const day = document.createElement('span');
+            day.className = 'day';
+            day.textContent = item.day || 'مسودة';
+            date.appendChild(day);
+
+            const month = document.createElement('span');
+            month.className = 'month';
+            month.textContent = item.month || 'لم تنشر';
+            date.appendChild(month);
+
+            article.appendChild(date);
+
+            const content = document.createElement('div');
+            content.className = 'news-content';
+
+            const title = document.createElement('h4');
+            title.textContent = item.title || '';
+            content.appendChild(title);
+
+            const paragraph = document.createElement('p');
+            paragraph.textContent = item.summary || '';
+            content.appendChild(paragraph);
+
+            const meta = document.createElement('div');
+            meta.className = 'news-meta';
+
+            const type = document.createElement('span');
+            type.className = `news-type ${item.type === 'news' ? 'is-news' : 'is-announcement'}`.trim();
+
+            const typeIcon = document.createElement('i');
+            const iconClass = item.type_icon || (item.type === 'news' ? 'fa-newspaper' : 'fa-bell');
+            typeIcon.className = `fas ${iconClass}`;
+            type.appendChild(typeIcon);
+            type.appendChild(document.createTextNode(` ${item.type_label || (item.type === 'news' ? 'خبر' : 'إعلان')}`));
+            meta.appendChild(type);
+
+            const time = document.createElement('span');
+            time.className = 'news-time';
+            time.textContent = item.published_human || '';
+            if (item.is_expired) {
+                time.appendChild(document.createTextNode(' • '));
+                const expired = document.createElement('span');
+                expired.className = 'text-warning';
+                expired.textContent = 'منتهي';
+                time.appendChild(expired);
+            }
+            meta.appendChild(time);
+
+            content.appendChild(meta);
+            article.appendChild(content);
+
+            this.announcementList.appendChild(article);
         });
     }
 
